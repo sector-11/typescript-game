@@ -83,10 +83,14 @@ const keys: { [Key: string]: boolean } = {
     d: false,
 };
 
+const currentEntities: Entity[] = [];
+
 const update = () => {
     drawTerrain(currentRoom);
-    player.draw();
-    player.move();
+    for (const entity of currentEntities) {
+        entity.move();
+        entity.draw();
+    }
     window.requestAnimationFrame(update);
 };
 
@@ -278,6 +282,7 @@ class Shot extends Entity {
 }
 
 const player = new Player(1, 1, "./src/assets/player.png", 4);
+currentEntities.push(player);
 
 const getCurrentTile = (entity: Entity) => {
     let column = Math.floor(
