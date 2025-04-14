@@ -40,15 +40,31 @@ canvas.width = TILE_SIZE * ROOM_WIDTH;
 canvas.height = TILE_SIZE * ROOM_HEIGHT;
 context.imageSmoothingEnabled = false;
 
+const keys: { [Key: string]: boolean } = {
+    w: false,
+    a: false,
+    s: false,
+    d: false,
+};
+
 const update = () => {
     drawTerrain(roomMaps);
     player.draw();
+    player.move();
     window.requestAnimationFrame(update);
 };
 
 window.onload = () => {
     window.requestAnimationFrame(update);
 };
+
+window.addEventListener("keydown", (ev) => {
+    keys[ev.key] = true;
+});
+
+window.addEventListener("keyup", (ev) => {
+    keys[ev.key] = false;
+});
 
 const drawTerrain = (room: Room) => {
     for (let row = 0; row < ROOM_HEIGHT; row++) {
@@ -73,8 +89,9 @@ class Player {
     x: number = 0;
     y: number = 0;
     image: HTMLImageElement;
+    speed: number;
 
-    constructor(x: number, y: number, src: string) {
+    constructor(x: number, y: number, src: string, speed: number) {
         this.image = new Image();
         this.image.src = src;
         this.image.onload = () => {
@@ -83,11 +100,27 @@ class Player {
             this.x = x * TILE_SIZE + (TILE_SIZE - this.image.naturalWidth * 2) / 2;
             this.y = y * TILE_SIZE + (TILE_SIZE - this.image.naturalHeight * 2) / 2;
         };
+        this.speed = speed;
     }
 
     draw() {
         context.drawImage(this.image, this.x, this.y, this.image.width, this.image.height);
     }
+
+    move() {
+        if (keys.w) {
+            this.y -= this.speed;
+        }
+        if (keys.s) {
+            this.y += this.speed;
+        }
+        if (keys.a) {
+            this.x -= this.speed;
+        }
+        if (keys.d) {
+            this.x += this.speed;
+        }
+    }
 }
 
-const player = new Player(1, 1, "./src/assets/player.png");
+const player = new Player(1, 1, "./src/assets/player.png", 4);
