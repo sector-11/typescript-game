@@ -81,6 +81,10 @@ const keys: { [Key: string]: boolean } = {
     a: false,
     s: false,
     d: false,
+    ArrowUp: false,
+    ArrowDown: false,
+    ArrowLeft: false,
+    ArrowRight: false,
 };
 
 const currentEntities: Entity[] = [];
@@ -192,6 +196,52 @@ class Player extends Entity {
         }
 
         this.updatePrevPosition();
+        this.shoot();
+    }
+
+    shoot() {
+        let x = this.x + this.image.width / 2;
+        let y = this.y + this.image.height / 2;
+        if (keys.ArrowUp) {
+            let newShot = new Shot(
+                x,
+                y - this.image.height / 2 - 4,
+                "./src/assets/bullet.png",
+                6,
+                [1, 0]
+            );
+            currentEntities.push(newShot);
+        }
+        if (keys.ArrowDown) {
+            let newShot = new Shot(
+                x,
+                y + this.image.height / 2 + 4,
+                "./src/assets/bullet.png",
+                6,
+                [-1, 0]
+            );
+            currentEntities.push(newShot);
+        }
+        if (keys.ArrowLeft) {
+            let newShot = new Shot(
+                x - this.image.width / 2 - 4,
+                y,
+                "./src/assets/bullet.png",
+                6,
+                [0, 1]
+            );
+            currentEntities.push(newShot);
+        }
+        if (keys.ArrowRight) {
+            let newShot = new Shot(
+                x + this.image.width / 2 + 4,
+                y,
+                "./src/assets/bullet.png",
+                6,
+                [0, -1]
+            );
+            currentEntities.push(newShot);
+        }
     }
 
     updatePrevPosition() {
@@ -247,8 +297,8 @@ class Player extends Entity {
 }
 
 class Shot extends Entity {
-    x: number = 0;
-    y: number = 0;
+    x: number;
+    y: number;
     image: HTMLImageElement;
     speed: number;
     direction: number[];
@@ -257,11 +307,11 @@ class Shot extends Entity {
         super();
         this.image = new Image();
         this.image.src = src;
+        this.x = x;
+        this.y = y;
         this.image.onload = () => {
             this.image.width = this.image.naturalWidth * 2;
             this.image.height = this.image.naturalHeight * 2;
-            this.x = x * TILE_SIZE + (TILE_SIZE - this.image.naturalWidth * 2) / 2;
-            this.y = y * TILE_SIZE + (TILE_SIZE - this.image.naturalHeight * 2) / 2;
         };
         this.speed = speed;
         this.direction = direction;
