@@ -242,6 +242,41 @@ class Player extends Entity {
     }
 }
 
+class Shot extends Entity {
+    x: number = 0;
+    y: number = 0;
+    image: HTMLImageElement;
+    speed: number;
+    direction: number[];
+
+    constructor(x: number, y: number, src: string, speed: number, direction: number[]) {
+        super();
+        this.image = new Image();
+        this.image.src = src;
+        this.image.onload = () => {
+            this.image.width = this.image.naturalWidth * 2;
+            this.image.height = this.image.naturalHeight * 2;
+            this.x = x * TILE_SIZE + (TILE_SIZE - this.image.naturalWidth * 2) / 2;
+            this.y = y * TILE_SIZE + (TILE_SIZE - this.image.naturalHeight * 2) / 2;
+        };
+        this.speed = speed;
+        this.direction = direction;
+    }
+
+    move(): void {
+        this.x -= this.direction[1] * this.speed;
+        this.y -= this.direction[0] * this.speed;
+    }
+
+    checkTileCollision(room: Room): void {
+        for (const tile of getNeigbouringTiles(getCurrentTile(this))) {
+            if (!isNotCollidingWithTile(this, tile) && room.terrain[tile[0]][tile[1]] != 1) {
+                // delete this object
+            }
+        }
+    }
+}
+
 const player = new Player(1, 1, "./src/assets/player.png", 4);
 
 const getCurrentTile = (player: Player) => {
