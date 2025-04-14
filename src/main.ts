@@ -279,11 +279,11 @@ class Shot extends Entity {
 
 const player = new Player(1, 1, "./src/assets/player.png", 4);
 
-const getCurrentTile = (player: Player) => {
+const getCurrentTile = (entity: Entity) => {
     let column = Math.floor(
-        (player.x + (TILE_SIZE - player.image.naturalWidth * 2) / 2) / TILE_SIZE
+        (entity.x + (TILE_SIZE - entity.image.naturalWidth * 2) / 2) / TILE_SIZE
     );
-    let row = Math.floor((player.y + (TILE_SIZE - player.image.naturalHeight * 2) / 2) / TILE_SIZE);
+    let row = Math.floor((entity.y + (TILE_SIZE - entity.image.naturalHeight * 2) / 2) / TILE_SIZE);
     return [row, column];
 };
 
@@ -301,13 +301,13 @@ const getNeigbouringTiles = (currentTile: number[]) => {
     ];
 };
 
-const isNotCollidingWithTile = (player: Player, tile: number[]) => {
+const isNotCollidingWithTile = (entity: Entity, tile: number[]) => {
     const x = TILE_SIZE * tile[1];
     const y = TILE_SIZE * tile[0];
     return (
-        player.x > x + TILE_SIZE ||
-        player.x + player.image.width < x ||
-        player.y > y + TILE_SIZE ||
-        player.y + player.image.height < y
+        entity.x > x + TILE_SIZE ||
+        entity.x + entity.image.width < x ||
+        entity.y > y + TILE_SIZE ||
+        entity.y + entity.image.height < y
     );
 };
