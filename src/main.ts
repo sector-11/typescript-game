@@ -90,6 +90,8 @@ class Player {
     y: number = 0;
     image: HTMLImageElement;
     speed: number;
+    previousX: number;
+    previousY: number;
 
     constructor(x: number, y: number, src: string, speed: number) {
         this.image = new Image();
@@ -101,6 +103,8 @@ class Player {
             this.y = y * TILE_SIZE + (TILE_SIZE - this.image.naturalHeight * 2) / 2;
         };
         this.speed = speed;
+        this.previousX = this.x;
+        this.previousY = this.y;
     }
 
     draw() {
@@ -120,7 +124,59 @@ class Player {
         if (keys.d) {
             this.x += this.speed;
         }
+
+        if (this.checkTileCollision()) {
+            this.x = this.previousX;
+            this.y = this.previousY;
+        }
+
+        this.updatePrevPosition();
+    }
+
+    updatePrevPosition() {
+        this.previousX = this.x;
+        this.previousY = this.y;
+    }
+
+    checkTileCollision(): boolean {
+        for (const tile of getNeigbouringTiles(getCurrentTile(this))) {
+            if (!isNotCollidingWithTile(this, tile) && roomMaps.terrain[tile[0]][tile[1]] != 1) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 
 const player = new Player(1, 1, "./src/assets/player.png", 4);
+
+const getCurrentTile = (player: Player) => {
+    let column = Math.floor((player.x + (TILE_SIZE - player.image.width * 2) / 2) / TILE_SIZE);
+    let row = Math.floor((player.y + (TILE_SIZE - player.image.height * 2) / 2) / TILE_SIZE);
+    return [row, column];
+};
+
+const getNeigbouringTiles = (currentTile: number[]) => {
+    return [
+        [currentTile[0] - 1, currentTile[1] - 1],
+        [currentTile[0] - 1, currentTile[1]],
+        [currentTile[0] - 1, currentTile[1] + 1],
+        [currentTile[0], currentTile[1] - 1],
+        currentTile,
+        [currentTile[0], currentTile[1] + 1],
+        [currentTile[0] + 1, currentTile[1] - 1],
+        [currentTile[0] + 1, currentTile[1]],
+        [currentTile[0] + 1, currentTile[1] + 1],
+    ];
+};
+
+const isNotCollidingWithTile = (player: Player, tile: number[]) => {
+    const x = TILE_SIZE * tile[1];
+    const y = TILE_SIZE * tile[0];
+    return (
+        player.x > x + TILE_SIZE ||
+        player.x + player.image.width < x ||
+        player.y > y + TILE_SIZE ||
+        player.y + player.image.height < y
+    );
+};
