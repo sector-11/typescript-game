@@ -38,9 +38,11 @@ const canvas = <HTMLCanvasElement>document.getElementById("canvas");
 const context = <CanvasRenderingContext2D>canvas.getContext("2d");
 canvas.width = TILE_SIZE * ROOM_WIDTH;
 canvas.height = TILE_SIZE * ROOM_HEIGHT;
+context.imageSmoothingEnabled = false;
 
 const update = () => {
     drawTerrain(roomMaps);
+    player.draw();
     window.requestAnimationFrame(update);
 };
 
@@ -66,3 +68,26 @@ const drawTerrain = (room: Room) => {
         }
     }
 };
+
+class Player {
+    x: number = 0;
+    y: number = 0;
+    image: HTMLImageElement;
+
+    constructor(x: number, y: number, src: string) {
+        this.image = new Image();
+        this.image.src = src;
+        this.image.onload = () => {
+            this.image.width = this.image.naturalWidth * 2;
+            this.image.height = this.image.naturalHeight * 2;
+            this.x = x * TILE_SIZE + (TILE_SIZE - this.image.naturalWidth * 2) / 2;
+            this.y = y * TILE_SIZE + (TILE_SIZE - this.image.naturalHeight * 2) / 2;
+        };
+    }
+
+    draw() {
+        context.drawImage(this.image, this.x, this.y, this.image.width, this.image.height);
+    }
+}
+
+const player = new Player(1, 1, "./src/assets/player.png");
