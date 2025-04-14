@@ -124,7 +124,20 @@ const drawTerrain = (room: Room) => {
     }
 };
 
-class Player {
+abstract class Entity {
+    abstract x: number;
+    abstract y: number;
+    abstract image: HTMLImageElement;
+
+    abstract move(): void;
+    abstract checkTileCollision(room: Room): void | number;
+
+    draw() {
+        context.drawImage(this.image, this.x, this.y, this.image.width, this.image.height);
+    }
+}
+
+class Player extends Entity {
     x: number = 0;
     y: number = 0;
     image: HTMLImageElement;
@@ -133,6 +146,7 @@ class Player {
     previousY: number;
 
     constructor(x: number, y: number, src: string, speed: number) {
+        super();
         this.image = new Image();
         this.image.src = src;
         this.image.onload = () => {
@@ -144,10 +158,6 @@ class Player {
         this.speed = speed;
         this.previousX = this.x;
         this.previousY = this.y;
-    }
-
-    draw() {
-        context.drawImage(this.image, this.x, this.y, this.image.width, this.image.height);
     }
 
     move() {
