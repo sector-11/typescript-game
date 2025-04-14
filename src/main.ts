@@ -264,34 +264,26 @@ class Player extends Entity {
             //top
             currentRoom = map[currentRoomIndex[0] - 1][currentRoomIndex[1]] as Room;
             currentRoomIndex[0]--;
-            this.x =
-                Math.floor(ROOM_WIDTH / 2) * TILE_SIZE +
-                (TILE_SIZE - this.image.naturalWidth * 2) / 2;
-            this.y = (ROOM_HEIGHT - 2) * TILE_SIZE + (TILE_SIZE - this.image.naturalHeight * 2) / 2;
+            this.x = Math.floor(ROOM_WIDTH / 2) * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
+            this.y = (ROOM_HEIGHT - 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
         } else if (currentTile[0] == ROOM_HEIGHT - 2) {
             //bottom
             currentRoom = map[currentRoomIndex[0] + 1][currentRoomIndex[1]] as Room;
             currentRoomIndex[0]++;
-            this.x =
-                Math.floor(ROOM_WIDTH / 2) * TILE_SIZE +
-                (TILE_SIZE - this.image.naturalWidth * 2) / 2;
-            this.y = 1 * TILE_SIZE + (TILE_SIZE - this.image.naturalHeight * 2) / 2;
+            this.x = Math.floor(ROOM_WIDTH / 2) * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
+            this.y = 1 * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
         } else if (currentTile[1] == 1) {
             //left
             currentRoom = map[currentRoomIndex[0]][currentRoomIndex[1] - 1] as Room;
             currentRoomIndex[1]--;
-            this.x = (ROOM_WIDTH - 2) * TILE_SIZE + (TILE_SIZE - this.image.naturalWidth * 2) / 2;
-            this.y =
-                Math.floor(ROOM_HEIGHT / 2) * TILE_SIZE +
-                (TILE_SIZE - this.image.naturalHeight * 2) / 2;
+            this.x = (ROOM_WIDTH - 2) * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
+            this.y = Math.floor(ROOM_HEIGHT / 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
         } else if (currentTile[1] == ROOM_WIDTH - 2) {
             //right
             currentRoom = map[currentRoomIndex[0]][currentRoomIndex[1] + 1] as Room;
             currentRoomIndex[1]++;
-            this.x = 1 * TILE_SIZE + (TILE_SIZE - this.image.naturalWidth * 2) / 2;
-            this.y =
-                Math.floor(ROOM_HEIGHT / 2) * TILE_SIZE +
-                (TILE_SIZE - this.image.naturalHeight * 2) / 2;
+            this.x = 1 * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
+            this.y = Math.floor(ROOM_HEIGHT / 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
         }
     }
 }
@@ -335,10 +327,8 @@ const player = new Player(1, 1, "./src/assets/player.png", 4);
 currentEntities.push(player);
 
 const getCurrentTile = (entity: Entity) => {
-    let column = Math.floor(
-        (entity.x + (TILE_SIZE - entity.image.naturalWidth * 2) / 2) / TILE_SIZE
-    );
-    let row = Math.floor((entity.y + (TILE_SIZE - entity.image.naturalHeight * 2) / 2) / TILE_SIZE);
+    let column = Math.floor((entity.x + (TILE_SIZE - entity.image.width) / 2) / TILE_SIZE);
+    let row = Math.floor((entity.y + (TILE_SIZE - entity.image.width) / 2) / TILE_SIZE);
     return [row, column];
 };
 
