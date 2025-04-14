@@ -4,12 +4,20 @@ const ROOM_WIDTH = 15;
 const ROOM_HEIGHT = 9;
 const TILE_SIZE = 100;
 
+const map: Array<Room | number>[] = [
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+];
+
 type Room = {
     terrain: number[][];
     startEntities: number[][];
 };
 
-const roomMaps: Room = {
+map[2][2] = {
     terrain: [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
@@ -19,7 +27,7 @@ const roomMaps: Room = {
         [0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0],
     ],
     startEntities: [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -32,7 +40,35 @@ const roomMaps: Room = {
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ],
-};
+} as Room;
+
+map[3][2] = {
+    terrain: [
+        [0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ],
+    startEntities: [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ],
+} as Room;
+
+let currentRoom: Room = map[2][2];
+let currentRoomIndex: number[] = [2, 2];
 
 const canvas = <HTMLCanvasElement>document.getElementById("canvas");
 const context = <CanvasRenderingContext2D>canvas.getContext("2d");
@@ -48,7 +84,7 @@ const keys: { [Key: string]: boolean } = {
 };
 
 const update = () => {
-    drawTerrain(roomMaps);
+    drawTerrain(currentRoom);
     player.draw();
     player.move();
     window.requestAnimationFrame(update);
@@ -75,6 +111,9 @@ const drawTerrain = (room: Room) => {
                     break;
                 case 1:
                     context.fillStyle = "lightgray";
+                    break;
+                case 9:
+                    context.fillStyle = "brown";
                     break;
                 default:
                     context.fillStyle = "red";
@@ -125,9 +164,17 @@ class Player {
             this.x += this.speed;
         }
 
-        if (this.checkTileCollision()) {
-            this.x = this.previousX;
-            this.y = this.previousY;
+        switch (this.checkTileCollision(currentRoom)) {
+            case -1:
+                //do nothing
+                break;
+            case 9:
+                this.goThroughDoor();
+                break;
+            default:
+                this.x = this.previousX;
+                this.y = this.previousY;
+                break;
         }
 
         this.updatePrevPosition();
@@ -138,13 +185,46 @@ class Player {
         this.previousY = this.y;
     }
 
-    checkTileCollision(): boolean {
+    checkTileCollision(room: Room): number {
         for (const tile of getNeigbouringTiles(getCurrentTile(this))) {
-            if (!isNotCollidingWithTile(this, tile) && roomMaps.terrain[tile[0]][tile[1]] != 1) {
-                return true;
+            if (!isNotCollidingWithTile(this, tile) && room.terrain[tile[0]][tile[1]] != 1) {
+                return room.terrain[tile[0]][tile[1]];
             }
         }
-        return false;
+        return -1;
+    }
+
+    goThroughDoor() {
+        const currentTile = getCurrentTile(this);
+        if (currentTile[0] == 1) {
+            //top
+            currentRoom = map[currentRoomIndex[0] - 1][currentRoomIndex[1]] as Room;
+            currentRoomIndex[0]--;
+            this.x =
+                Math.floor(ROOM_WIDTH / 2) * TILE_SIZE + (TILE_SIZE - this.image.width * 2) / 2;
+            this.y = (ROOM_HEIGHT - 2) * TILE_SIZE + (TILE_SIZE - this.image.height * 2) / 2;
+        } else if (currentTile[0] == ROOM_HEIGHT - 2) {
+            //bottom
+            currentRoom = map[currentRoomIndex[0] + 1][currentRoomIndex[1]] as Room;
+            currentRoomIndex[0]++;
+            this.x =
+                Math.floor(ROOM_WIDTH / 2) * TILE_SIZE + (TILE_SIZE - this.image.width * 2) / 2;
+            this.y = 1 * TILE_SIZE + (TILE_SIZE - this.image.height * 2) / 2;
+        } else if (currentTile[1] == 1) {
+            //left
+            currentRoom = map[currentRoomIndex[0]][currentRoomIndex[1] - 1] as Room;
+            currentRoomIndex[1]--;
+            this.x = (ROOM_WIDTH - 2) * TILE_SIZE + (TILE_SIZE - this.image.width * 2) / 2;
+            this.y =
+                Math.floor(ROOM_HEIGHT / 2) * TILE_SIZE + (TILE_SIZE - this.image.height * 2) / 2;
+        } else if (currentTile[1] == ROOM_WIDTH - 2) {
+            //right
+            currentRoom = map[currentRoomIndex[0]][currentRoomIndex[1] + 1] as Room;
+            currentRoomIndex[1]++;
+            this.x = 1 * TILE_SIZE + (TILE_SIZE - this.image.width * 2) / 2;
+            this.y =
+                Math.floor(ROOM_HEIGHT / 2) * TILE_SIZE + (TILE_SIZE - this.image.height * 2) / 2;
+        }
     }
 }
 
