@@ -387,12 +387,13 @@ class Shot extends Entity {
     move(): void {
         this.x -= this.direction[1] * this.speed;
         this.y -= this.direction[0] * this.speed;
+        this.checkTileCollision(currentRoom);
     }
 
     checkTileCollision(room: Room): void {
         for (const tile of getNeigbouringTiles(getCurrentTile(this))) {
             if (!isNotCollidingWithTile(this, tile) && room.terrain[tile[0]][tile[1]] != 1) {
-                // delete this object
+                currentEntities.splice(currentEntities.indexOf(this), 1);
             }
         }
     }
