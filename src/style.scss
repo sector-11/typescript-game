@@ -1,3 +1,15 @@
+@mixin mobile {
+    @media only screen and (hover: none), (pointer: hover), (pointer: coarse) {
+        @content;
+    }
+}
+
+@mixin desktop {
+    @media only screen and (pointer: fine) {
+        @content;
+    }
+}
+
 body {
     margin: 0;
 }
@@ -8,35 +20,59 @@ body {
     }
 
     @media only screen and (orientation: landscape) {
-        height: 100vh;
-        display: grid;
-        grid-template-columns: 2fr 5fr 2fr;
-        grid-template-rows: 1fr;
-        grid-column-gap: 5px;
-        grid-row-gap: 0px;
-        align-items: center;
-        justify-content: center;
+        @include desktop() {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @include mobile() {
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 2fr 5fr 2fr;
+            grid-template-rows: 1fr;
+            grid-column-gap: 5px;
+            grid-row-gap: 0px;
+            align-items: center;
+            justify-content: center;
+        }
     }
 
     &__container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        aspect-ratio: 15 / 9;
-        margin: 2% 10px;
-        height: auto;
+        @include desktop() {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @include mobile() {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            aspect-ratio: 15 / 9;
+            margin: 2% 10px;
+            height: auto;
+        }
     }
 }
 
 .controls {
-    display: grid;
-    aspect-ratio: 1 / 1;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    grid-column-gap: 5px;
-    grid-row-gap: 5px;
-    align-items: center;
-    justify-items: center;
+    @include desktop() {
+        display: none;
+    }
+
+    @include mobile() {
+        display: grid;
+        aspect-ratio: 1 / 1;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        grid-column-gap: 5px;
+        grid-row-gap: 5px;
+        align-items: center;
+        justify-items: center;
+    }
 
     &--left {
         margin-left: 2%;
