@@ -15,18 +15,12 @@ body {
 }
 
 .game {
-    @media only screen and (orientation: portrait) {
-        display: none;
-    }
-
-    @media only screen and (orientation: landscape) {
-        @include desktop() {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+    @include mobile() {
+        @media only screen and (orientation: portrait) {
+            display: none;
         }
 
-        @include mobile() {
+        @media only screen and (orientation: landscape) {
             height: 100vh;
             display: grid;
             grid-template-columns: 2fr 5fr 2fr;
@@ -36,6 +30,12 @@ body {
             align-items: center;
             justify-content: center;
         }
+    }
+
+    @include desktop() {
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     &__container {
@@ -124,18 +124,24 @@ canvas {
 }
 
 .rotate {
-    @media only screen and (orientation: portrait) {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 100vh;
-        background-color: black;
+    @include desktop() {
+        display: none;
     }
 
-    @media only screen and (orientation: landscape) {
-        display: none;
+    @include mobile() {
+        @media only screen and (orientation: portrait) {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100vh;
+            background-color: black;
+        }
+
+        @media only screen and (orientation: landscape) {
+            display: none;
+        }
     }
 
     &__text {
