@@ -99,6 +99,7 @@ const update = () => {
 };
 
 window.onload = () => {
+    initializeButtons();
     window.requestAnimationFrame(update);
 };
 
@@ -109,6 +110,72 @@ window.addEventListener("keydown", (ev) => {
 window.addEventListener("keyup", (ev) => {
     keys[ev.key] = false;
 });
+
+const initializeButtons = () => {
+    const leftPadUp = <HTMLButtonElement>document.getElementById("left-pad-up");
+    leftPadUp.addEventListener("touchstart", (ev) => {
+        keys["w"] = true;
+    });
+    leftPadUp.addEventListener("touchend", (ev) => {
+        keys["w"] = false;
+    });
+
+    const leftPadDown = <HTMLButtonElement>document.getElementById("left-pad-down");
+    leftPadDown.addEventListener("touchstart", (ev) => {
+        keys["s"] = true;
+    });
+    leftPadDown.addEventListener("touchend", (ev) => {
+        keys["s"] = false;
+    });
+
+    const leftPadLeft = <HTMLButtonElement>document.getElementById("left-pad-left");
+    leftPadLeft.addEventListener("touchstart", (ev) => {
+        keys["a"] = true;
+    });
+    leftPadLeft.addEventListener("touchend", (ev) => {
+        keys["a"] = false;
+    });
+
+    const leftPadRight = <HTMLButtonElement>document.getElementById("left-pad-right");
+    leftPadRight.addEventListener("touchstart", (ev) => {
+        keys["d"] = true;
+    });
+    leftPadRight.addEventListener("touchend", (ev) => {
+        keys["d"] = false;
+    });
+
+    const rightPadUp = <HTMLButtonElement>document.getElementById("right-pad-up");
+    rightPadUp.addEventListener("touchstart", (ev) => {
+        keys["ArrowUp"] = true;
+    });
+    rightPadUp.addEventListener("touchend", (ev) => {
+        keys["ArrowUp"] = false;
+    });
+
+    const rightPadDown = <HTMLButtonElement>document.getElementById("right-pad-down");
+    rightPadDown.addEventListener("touchstart", (ev) => {
+        keys["ArrowDown"] = true;
+    });
+    rightPadDown.addEventListener("touchend", (ev) => {
+        keys["ArrowDown"] = false;
+    });
+
+    const rightPadLeft = <HTMLButtonElement>document.getElementById("right-pad-left");
+    rightPadLeft.addEventListener("touchstart", (ev) => {
+        keys["ArrowLeft"] = true;
+    });
+    rightPadLeft.addEventListener("touchend", (ev) => {
+        keys["ArrowLeft"] = false;
+    });
+
+    const rightPadRight = <HTMLButtonElement>document.getElementById("right-pad-right");
+    rightPadRight.addEventListener("touchstart", (ev) => {
+        keys["ArrowRight"] = true;
+    });
+    rightPadRight.addEventListener("touchend", (ev) => {
+        keys["ArrowRight"] = false;
+    });
+};
 
 const drawTerrain = (room: Room) => {
     for (let row = 0; row < ROOM_HEIGHT; row++) {
