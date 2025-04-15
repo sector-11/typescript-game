@@ -219,8 +219,10 @@ class Player extends Entity {
     speed: number;
     previousX: number;
     previousY: number;
+    lastShot: number;
+    fireDelay: number;
 
-    constructor(x: number, y: number, src: string, speed: number) {
+    constructor(x: number, y: number, src: string, speed: number, fireDelay: number) {
         super();
         this.image = new Image();
         this.image.src = src;
@@ -233,6 +235,8 @@ class Player extends Entity {
         this.speed = speed;
         this.previousX = this.x;
         this.previousY = this.y;
+        this.lastShot = 0;
+        this.fireDelay = fireDelay;
     }
 
     move() {
@@ -269,7 +273,7 @@ class Player extends Entity {
     shoot() {
         let x = this.x + this.image.width / 2;
         let y = this.y + this.image.height / 2;
-        if (keys.ArrowUp) {
+        if (keys.ArrowUp && this.lastShot <= Date.now() - this.fireDelay) {
             let newShot = new Shot(
                 x,
                 y - this.image.height / 2 - 4,
@@ -278,8 +282,9 @@ class Player extends Entity {
                 [1, 0]
             );
             currentEntities.push(newShot);
+            this.lastShot = Date.now();
         }
-        if (keys.ArrowDown) {
+        if (keys.ArrowDown && this.lastShot <= Date.now() - this.fireDelay) {
             let newShot = new Shot(
                 x,
                 y + this.image.height / 2 + 4,
@@ -288,8 +293,9 @@ class Player extends Entity {
                 [-1, 0]
             );
             currentEntities.push(newShot);
+            this.lastShot = Date.now();
         }
-        if (keys.ArrowLeft) {
+        if (keys.ArrowLeft && this.lastShot <= Date.now() - this.fireDelay) {
             let newShot = new Shot(
                 x - this.image.width / 2 - 4,
                 y,
@@ -298,8 +304,9 @@ class Player extends Entity {
                 [0, 1]
             );
             currentEntities.push(newShot);
+            this.lastShot = Date.now();
         }
-        if (keys.ArrowRight) {
+        if (keys.ArrowRight && this.lastShot <= Date.now() - this.fireDelay) {
             let newShot = new Shot(
                 x + this.image.width / 2 + 4,
                 y,
@@ -308,6 +315,7 @@ class Player extends Entity {
                 [0, -1]
             );
             currentEntities.push(newShot);
+            this.lastShot = Date.now();
         }
     }
 
@@ -390,7 +398,7 @@ class Shot extends Entity {
     }
 }
 
-const player = new Player(1, 1, "./src/assets/player.png", 4);
+const player = new Player(1, 1, "./src/assets/player.png", 4, 500);
 currentEntities.push(player);
 
 const getCurrentTile = (entity: Entity) => {
