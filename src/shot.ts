@@ -40,6 +40,7 @@ export default class Shot extends Entity {
         for (const entity of shared.currentEntities) {
             if (!entitiesNotColliding(this, entity)) {
                 if (entity instanceof Enemy) {
+                    entity.getHit();
                     shared.currentEntities.splice(shared.currentEntities.indexOf(this), 1);
                 }
             }
