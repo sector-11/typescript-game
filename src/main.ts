@@ -212,9 +212,23 @@ abstract class Entity {
     }
 }
 
+const PLAYER_IMAGE = new Image();
+PLAYER_IMAGE.src = "./src/assets/player.png";
+PLAYER_IMAGE.onload = () => {
+    PLAYER_IMAGE.width = PLAYER_IMAGE.naturalWidth * 2;
+    PLAYER_IMAGE.height = PLAYER_IMAGE.naturalHeight * 2;
+};
+
+const BULLET_IMAGE = new Image();
+BULLET_IMAGE.src = "./src/assets/bullet.png";
+BULLET_IMAGE.onload = () => {
+    BULLET_IMAGE.width = BULLET_IMAGE.naturalWidth * 2;
+    BULLET_IMAGE.height = BULLET_IMAGE.naturalHeight * 2;
+};
+
 class Player extends Entity {
-    x: number = 0;
-    y: number = 0;
+    x: number = 720;
+    y: number = 420;
     image: HTMLImageElement;
     speed: number;
     previousX: number;
@@ -222,16 +236,11 @@ class Player extends Entity {
     lastShot: number;
     fireDelay: number;
 
-    constructor(x: number, y: number, src: string, speed: number, fireDelay: number) {
+    constructor(x: number, y: number, image: HTMLImageElement, speed: number, fireDelay: number) {
         super();
-        this.image = new Image();
-        this.image.src = src;
-        this.image.onload = () => {
-            this.image.width = this.image.naturalWidth * 2;
-            this.image.height = this.image.naturalHeight * 2;
-            this.x = x * TILE_SIZE + (TILE_SIZE - this.image.naturalWidth * 2) / 2;
-            this.y = y * TILE_SIZE + (TILE_SIZE - this.image.naturalHeight * 2) / 2;
-        };
+        this.image = image;
+        this.x = x * TILE_SIZE + (TILE_SIZE - this.image.naturalWidth * 2) / 2;
+        this.y = y * TILE_SIZE + (TILE_SIZE - this.image.naturalHeight * 2) / 2;
         this.speed = speed;
         this.previousX = this.x;
         this.previousY = this.y;
@@ -274,46 +283,22 @@ class Player extends Entity {
         let x = this.x + this.image.width / 2;
         let y = this.y + this.image.height / 2;
         if (keys.ArrowUp && this.lastShot <= Date.now() - this.fireDelay) {
-            let newShot = new Shot(
-                x,
-                y - this.image.height / 2 - 4,
-                "./src/assets/bullet.png",
-                6,
-                [1, 0]
-            );
+            let newShot = new Shot(x, y - this.image.height / 2 - 4, BULLET_IMAGE, 6, [1, 0]);
             currentEntities.push(newShot);
             this.lastShot = Date.now();
         }
         if (keys.ArrowDown && this.lastShot <= Date.now() - this.fireDelay) {
-            let newShot = new Shot(
-                x,
-                y + this.image.height / 2 + 4,
-                "./src/assets/bullet.png",
-                6,
-                [-1, 0]
-            );
+            let newShot = new Shot(x, y + this.image.height / 2 + 4, BULLET_IMAGE, 6, [-1, 0]);
             currentEntities.push(newShot);
             this.lastShot = Date.now();
         }
         if (keys.ArrowLeft && this.lastShot <= Date.now() - this.fireDelay) {
-            let newShot = new Shot(
-                x - this.image.width / 2 - 4,
-                y,
-                "./src/assets/bullet.png",
-                6,
-                [0, 1]
-            );
+            let newShot = new Shot(x - this.image.width / 2 - 4, y, BULLET_IMAGE, 6, [0, 1]);
             currentEntities.push(newShot);
             this.lastShot = Date.now();
         }
         if (keys.ArrowRight && this.lastShot <= Date.now() - this.fireDelay) {
-            let newShot = new Shot(
-                x + this.image.width / 2 + 4,
-                y,
-                "./src/assets/bullet.png",
-                6,
-                [0, -1]
-            );
+            let newShot = new Shot(x + this.image.width / 2 + 4, y, BULLET_IMAGE, 6, [0, -1]);
             currentEntities.push(newShot);
             this.lastShot = Date.now();
         }
@@ -370,16 +355,11 @@ class Shot extends Entity {
     speed: number;
     direction: number[];
 
-    constructor(x: number, y: number, src: string, speed: number, direction: number[]) {
+    constructor(x: number, y: number, image: HTMLImageElement, speed: number, direction: number[]) {
         super();
-        this.image = new Image();
-        this.image.src = src;
+        this.image = image;
         this.x = x;
         this.y = y;
-        this.image.onload = () => {
-            this.image.width = this.image.naturalWidth * 2;
-            this.image.height = this.image.naturalHeight * 2;
-        };
         this.speed = speed;
         this.direction = direction;
     }
@@ -399,7 +379,7 @@ class Shot extends Entity {
     }
 }
 
-const player = new Player(1, 1, "./src/assets/player.png", 4, 500);
+const player = new Player(7, 4, PLAYER_IMAGE, 4, 500);
 currentEntities.push(player);
 
 const getCurrentTile = (entity: Entity) => {
