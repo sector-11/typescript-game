@@ -227,8 +227,8 @@ BULLET_IMAGE.onload = () => {
 };
 
 class Player extends Entity {
-    x: number = 720;
-    y: number = 420;
+    x: number = 0;
+    y: number = 0;
     image: HTMLImageElement;
     speed: number;
     previousX: number;
@@ -345,6 +345,8 @@ class Player extends Entity {
             this.x = 1 * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
             this.y = Math.floor(ROOM_HEIGHT / 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
         }
+        currentEntities.length = 0;
+        currentEntities.push(this);
     }
 }
 
