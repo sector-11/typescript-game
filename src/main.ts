@@ -226,6 +226,13 @@ BULLET_IMAGE.onload = () => {
     BULLET_IMAGE.height = BULLET_IMAGE.naturalHeight * 2;
 };
 
+const ENEMY_IMAGE = new Image();
+ENEMY_IMAGE.src = "./src/assets/monster-lizard.png";
+ENEMY_IMAGE.onload = () => {
+    ENEMY_IMAGE.width = ENEMY_IMAGE.naturalWidth * 2;
+    ENEMY_IMAGE.height = ENEMY_IMAGE.naturalHeight * 2;
+};
+
 class Player extends Entity {
     x: number = 0;
     y: number = 0;
@@ -381,8 +388,81 @@ class Shot extends Entity {
     }
 }
 
+class Enemy extends Entity {
+    x: number = 0;
+    y: number = 0;
+    image: HTMLImageElement;
+    speed: number;
+    previousX: number;
+    previousY: number;
+    direction: number = 0;
+    lastDirection: number = 0;
+    moveDelay: number = 1000;
+
+    constructor(x: number, y: number, image: HTMLImageElement, speed: number) {
+        super();
+        this.image = image;
+        this.x = x * TILE_SIZE + (TILE_SIZE - this.image.naturalWidth * 2) / 2;
+        this.y = y * TILE_SIZE + (TILE_SIZE - this.image.naturalHeight * 2) / 2;
+        this.speed = speed;
+        this.previousX = this.x;
+        this.previousY = this.y;
+    }
+
+    move() {
+        if (this.lastDirection <= Date.now() - this.moveDelay) {
+            this.direction = Math.random();
+            this.lastDirection = Date.now();
+        }
+
+        if (this.direction <= 0.25) {
+            this.y -= this.speed;
+        }
+        if (this.direction > 0.25 && this.direction <= 0.5) {
+            this.y += this.speed;
+        }
+        if (this.direction > 0.5 && this.direction <= 0.75) {
+            this.x -= this.speed;
+        }
+        if (this.direction > 0.75) {
+            this.x += this.speed;
+        }
+
+        switch (this.checkTileCollision(currentRoom)) {
+            case -1:
+                //do nothing
+                break;
+            default:
+                this.x = this.previousX;
+                this.y = this.previousY;
+                break;
+        }
+
+        this.updatePrevPosition();
+    }
+
+    updatePrevPosition() {
+        this.previousX = this.x;
+        this.previousY = this.y;
+    }
+
+    checkTileCollision(room: Room): number {
+        for (const tile of getNeigbouringTiles(getCurrentTile(this))) {
+            if (!isNotCollidingWithTile(this, tile) && room.terrain[tile[0]][tile[1]] != 1) {
+                return room.terrain[tile[0]][tile[1]];
+            }
+        }
+        return -1;
+    }
+}
+
 const player = new Player(7, 4, PLAYER_IMAGE, 4, 500);
 currentEntities.push(player);
+
+const testEnemy1 = new Enemy(2, 2, ENEMY_IMAGE, 4);
+currentEntities.push(testEnemy1);
+const testEnemy2 = new Enemy(12, 6, ENEMY_IMAGE, 4);
+currentEntities.push(testEnemy2);
 
 const getCurrentTile = (entity: Entity) => {
     let column = Math.floor((entity.x + (TILE_SIZE - entity.image.width) / 2) / TILE_SIZE);
