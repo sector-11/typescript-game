@@ -1,13 +1,13 @@
 import { PLAYER_IMAGE } from "./constants";
 import Entity from "./entity";
-import { map, Room } from "./map";
+import { Room } from "./map";
 import Player from "./player";
 
 class Shared {
     private static instance: Shared;
 
-    currentRoom: Room = <Room>map[2][2];
-    currentRoomIndex: number[] = [2, 2];
+    currentRoom: Room = { terrain: [], startEntities: [] };
+    currentRoomIndex: number[] = [];
     currentEntities: Entity[] = [];
     keys: { [Key: string]: boolean } = {
         w: false,
