@@ -1,7 +1,10 @@
 import "./style.scss";
-import { ROOM_WIDTH, ROOM_HEIGHT, TILE_SIZE, canvas, context } from "./constants";
+import { ROOM_WIDTH, ROOM_HEIGHT, TILE_SIZE, canvas, context, PLAYER_IMAGE } from "./constants";
 import { map, Room } from "./map";
 import { shared } from "./shared";
+import Entity from "./entity";
+import { getCurrentTile, getNeigbouringTiles, isNotCollidingWithTile } from "./tiles";
+import Player from "./player";
 
 shared.currentRoom = <Room>map[2][2];
 shared.currentRoomIndex = [2, 2];
@@ -10,22 +13,9 @@ canvas.width = TILE_SIZE * ROOM_WIDTH;
 canvas.height = TILE_SIZE * ROOM_HEIGHT;
 context.imageSmoothingEnabled = false;
 
-const keys: { [Key: string]: boolean } = {
-    w: false,
-    a: false,
-    s: false,
-    d: false,
-    ArrowUp: false,
-    ArrowDown: false,
-    ArrowLeft: false,
-    ArrowRight: false,
-};
-
-const currentEntities: Entity[] = [];
-
 const update = () => {
     drawTerrain(shared.currentRoom);
-    for (const entity of currentEntities) {
+    for (const entity of shared.currentEntities) {
         entity.move();
         entity.draw();
     }
@@ -38,76 +28,76 @@ window.onload = () => {
 };
 
 window.addEventListener("keydown", (ev) => {
-    keys[ev.key] = true;
+    shared.keys[ev.key] = true;
 });
 
 window.addEventListener("keyup", (ev) => {
-    keys[ev.key] = false;
+    shared.keys[ev.key] = false;
 });
 
 const initializeButtons = () => {
     const leftPadUp = <HTMLButtonElement>document.getElementById("left-pad-up");
     leftPadUp.addEventListener("touchstart", (ev) => {
-        keys["w"] = true;
+        shared.keys["w"] = true;
     });
     leftPadUp.addEventListener("touchend", (ev) => {
-        keys["w"] = false;
+        shared.keys["w"] = false;
     });
 
     const leftPadDown = <HTMLButtonElement>document.getElementById("left-pad-down");
     leftPadDown.addEventListener("touchstart", (ev) => {
-        keys["s"] = true;
+        shared.keys["s"] = true;
     });
     leftPadDown.addEventListener("touchend", (ev) => {
-        keys["s"] = false;
+        shared.keys["s"] = false;
     });
 
     const leftPadLeft = <HTMLButtonElement>document.getElementById("left-pad-left");
     leftPadLeft.addEventListener("touchstart", (ev) => {
-        keys["a"] = true;
+        shared.keys["a"] = true;
     });
     leftPadLeft.addEventListener("touchend", (ev) => {
-        keys["a"] = false;
+        shared.keys["a"] = false;
     });
 
     const leftPadRight = <HTMLButtonElement>document.getElementById("left-pad-right");
     leftPadRight.addEventListener("touchstart", (ev) => {
-        keys["d"] = true;
+        shared.keys["d"] = true;
     });
     leftPadRight.addEventListener("touchend", (ev) => {
-        keys["d"] = false;
+        shared.keys["d"] = false;
     });
 
     const rightPadUp = <HTMLButtonElement>document.getElementById("right-pad-up");
     rightPadUp.addEventListener("touchstart", (ev) => {
-        keys["ArrowUp"] = true;
+        shared.keys["ArrowUp"] = true;
     });
     rightPadUp.addEventListener("touchend", (ev) => {
-        keys["ArrowUp"] = false;
+        shared.keys["ArrowUp"] = false;
     });
 
     const rightPadDown = <HTMLButtonElement>document.getElementById("right-pad-down");
     rightPadDown.addEventListener("touchstart", (ev) => {
-        keys["ArrowDown"] = true;
+        shared.keys["ArrowDown"] = true;
     });
     rightPadDown.addEventListener("touchend", (ev) => {
-        keys["ArrowDown"] = false;
+        shared.keys["ArrowDown"] = false;
     });
 
     const rightPadLeft = <HTMLButtonElement>document.getElementById("right-pad-left");
     rightPadLeft.addEventListener("touchstart", (ev) => {
-        keys["ArrowLeft"] = true;
+        shared.keys["ArrowLeft"] = true;
     });
     rightPadLeft.addEventListener("touchend", (ev) => {
-        keys["ArrowLeft"] = false;
+        shared.keys["ArrowLeft"] = false;
     });
 
     const rightPadRight = <HTMLButtonElement>document.getElementById("right-pad-right");
     rightPadRight.addEventListener("touchstart", (ev) => {
-        keys["ArrowRight"] = true;
+        shared.keys["ArrowRight"] = true;
     });
     rightPadRight.addEventListener("touchend", (ev) => {
-        keys["ArrowRight"] = false;
+        shared.keys["ArrowRight"] = false;
     });
 };
 
@@ -133,202 +123,12 @@ const drawTerrain = (room: Room) => {
     }
 };
 
-abstract class Entity {
-    abstract x: number;
-    abstract y: number;
-    abstract image: HTMLImageElement;
-
-    abstract move(): void;
-    abstract checkTileCollision(room: Room): void | number;
-
-    draw() {
-        context.drawImage(this.image, this.x, this.y, this.image.width, this.image.height);
-    }
-}
-
-const PLAYER_IMAGE = new Image();
-PLAYER_IMAGE.src = "./src/assets/player.png";
-PLAYER_IMAGE.onload = () => {
-    PLAYER_IMAGE.width = PLAYER_IMAGE.naturalWidth * 2;
-    PLAYER_IMAGE.height = PLAYER_IMAGE.naturalHeight * 2;
-};
-
-const BULLET_IMAGE = new Image();
-BULLET_IMAGE.src = "./src/assets/bullet.png";
-BULLET_IMAGE.onload = () => {
-    BULLET_IMAGE.width = BULLET_IMAGE.naturalWidth * 2;
-    BULLET_IMAGE.height = BULLET_IMAGE.naturalHeight * 2;
-};
-
 const ENEMY_IMAGE = new Image();
 ENEMY_IMAGE.src = "./src/assets/monster-lizard.png";
 ENEMY_IMAGE.onload = () => {
     ENEMY_IMAGE.width = ENEMY_IMAGE.naturalWidth * 2;
     ENEMY_IMAGE.height = ENEMY_IMAGE.naturalHeight * 2;
 };
-
-class Player extends Entity {
-    x: number = 0;
-    y: number = 0;
-    image: HTMLImageElement;
-    speed: number;
-    previousX: number;
-    previousY: number;
-    lastShot: number;
-    fireDelay: number;
-
-    constructor(x: number, y: number, image: HTMLImageElement, speed: number, fireDelay: number) {
-        super();
-        this.image = image;
-        this.x = x * TILE_SIZE + (TILE_SIZE - this.image.naturalWidth * 2) / 2;
-        this.y = y * TILE_SIZE + (TILE_SIZE - this.image.naturalHeight * 2) / 2;
-        this.speed = speed;
-        this.previousX = this.x;
-        this.previousY = this.y;
-        this.lastShot = 0;
-        this.fireDelay = fireDelay;
-    }
-
-    move() {
-        if (keys.w) {
-            this.y -= this.speed;
-        }
-        if (keys.s) {
-            this.y += this.speed;
-        }
-        if (keys.a) {
-            this.x -= this.speed;
-        }
-        if (keys.d) {
-            this.x += this.speed;
-        }
-
-        switch (this.checkTileCollision(shared.currentRoom)) {
-            case -1:
-                //do nothing
-                break;
-            case 9:
-                this.goThroughDoor();
-                break;
-            default:
-                this.x = this.previousX;
-                this.y = this.previousY;
-                break;
-        }
-
-        this.updatePrevPosition();
-        this.shoot();
-    }
-
-    shoot() {
-        let x = this.x + this.image.width / 2;
-        let y = this.y + this.image.height / 2;
-        if (keys.ArrowUp && this.lastShot <= Date.now() - this.fireDelay) {
-            let newShot = new Shot(x, y - this.image.height / 2 - 4, BULLET_IMAGE, 6, [1, 0]);
-            currentEntities.push(newShot);
-            this.lastShot = Date.now();
-        }
-        if (keys.ArrowDown && this.lastShot <= Date.now() - this.fireDelay) {
-            let newShot = new Shot(x, y + this.image.height / 2 + 4, BULLET_IMAGE, 6, [-1, 0]);
-            currentEntities.push(newShot);
-            this.lastShot = Date.now();
-        }
-        if (keys.ArrowLeft && this.lastShot <= Date.now() - this.fireDelay) {
-            let newShot = new Shot(x - this.image.width / 2 - 4, y, BULLET_IMAGE, 6, [0, 1]);
-            currentEntities.push(newShot);
-            this.lastShot = Date.now();
-        }
-        if (keys.ArrowRight && this.lastShot <= Date.now() - this.fireDelay) {
-            let newShot = new Shot(x + this.image.width / 2 + 4, y, BULLET_IMAGE, 6, [0, -1]);
-            currentEntities.push(newShot);
-            this.lastShot = Date.now();
-        }
-    }
-
-    updatePrevPosition() {
-        this.previousX = this.x;
-        this.previousY = this.y;
-    }
-
-    checkTileCollision(room: Room): number {
-        for (const tile of getNeigbouringTiles(getCurrentTile(this))) {
-            if (!isNotCollidingWithTile(this, tile) && room.terrain[tile[0]][tile[1]] != 1) {
-                return room.terrain[tile[0]][tile[1]];
-            }
-        }
-        return -1;
-    }
-
-    goThroughDoor() {
-        const currentTile = getCurrentTile(this);
-        if (currentTile[0] == 1) {
-            //top
-            shared.currentRoom = map[shared.currentRoomIndex[0] - 1][
-                shared.currentRoomIndex[1]
-            ] as Room;
-            shared.currentRoomIndex[0]--;
-            this.x = Math.floor(ROOM_WIDTH / 2) * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
-            this.y = (ROOM_HEIGHT - 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
-        } else if (currentTile[0] == ROOM_HEIGHT - 2) {
-            //bottom
-            shared.currentRoom = map[shared.currentRoomIndex[0] + 1][
-                shared.currentRoomIndex[1]
-            ] as Room;
-            shared.currentRoomIndex[0]++;
-            this.x = Math.floor(ROOM_WIDTH / 2) * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
-            this.y = 1 * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
-        } else if (currentTile[1] == 1) {
-            //left
-            shared.currentRoom = map[shared.currentRoomIndex[0]][
-                shared.currentRoomIndex[1] - 1
-            ] as Room;
-            shared.currentRoomIndex[1]--;
-            this.x = (ROOM_WIDTH - 2) * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
-            this.y = Math.floor(ROOM_HEIGHT / 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
-        } else if (currentTile[1] == ROOM_WIDTH - 2) {
-            //right
-            shared.currentRoom = map[shared.currentRoomIndex[0]][
-                shared.currentRoomIndex[1] + 1
-            ] as Room;
-            shared.currentRoomIndex[1]++;
-            this.x = 1 * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
-            this.y = Math.floor(ROOM_HEIGHT / 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
-        }
-        currentEntities.length = 0;
-        currentEntities.push(this);
-    }
-}
-
-class Shot extends Entity {
-    x: number;
-    y: number;
-    image: HTMLImageElement;
-    speed: number;
-    direction: number[];
-
-    constructor(x: number, y: number, image: HTMLImageElement, speed: number, direction: number[]) {
-        super();
-        this.image = image;
-        this.x = x;
-        this.y = y;
-        this.speed = speed;
-        this.direction = direction;
-    }
-
-    move(): void {
-        this.x -= this.direction[1] * this.speed;
-        this.y -= this.direction[0] * this.speed;
-        this.checkTileCollision(shared.currentRoom);
-    }
-
-    checkTileCollision(room: Room): void {
-        for (const tile of getNeigbouringTiles(getCurrentTile(this))) {
-            if (!isNotCollidingWithTile(this, tile) && room.terrain[tile[0]][tile[1]] != 1) {
-                currentEntities.splice(currentEntities.indexOf(this), 1);
-            }
-        }
-    }
-}
 
 class Enemy extends Entity {
     x: number = 0;
@@ -398,43 +198,12 @@ class Enemy extends Entity {
 }
 
 const player = new Player(7, 4, PLAYER_IMAGE, 4, 500);
-currentEntities.push(player);
+shared.currentEntities.push(player);
 
 const testEnemy1 = new Enemy(2, 2, ENEMY_IMAGE, 4);
-currentEntities.push(testEnemy1);
+shared.currentEntities.push(testEnemy1);
 const testEnemy2 = new Enemy(12, 6, ENEMY_IMAGE, 4);
-currentEntities.push(testEnemy2);
-
-const getCurrentTile = (entity: Entity) => {
-    let column = Math.floor((entity.x + (TILE_SIZE - entity.image.width) / 2) / TILE_SIZE);
-    let row = Math.floor((entity.y + (TILE_SIZE - entity.image.width) / 2) / TILE_SIZE);
-    return [row, column];
-};
-
-const getNeigbouringTiles = (currentTile: number[]) => {
-    return [
-        [currentTile[0] - 1, currentTile[1] - 1],
-        [currentTile[0] - 1, currentTile[1]],
-        [currentTile[0] - 1, currentTile[1] + 1],
-        [currentTile[0], currentTile[1] - 1],
-        currentTile,
-        [currentTile[0], currentTile[1] + 1],
-        [currentTile[0] + 1, currentTile[1] - 1],
-        [currentTile[0] + 1, currentTile[1]],
-        [currentTile[0] + 1, currentTile[1] + 1],
-    ];
-};
-
-const isNotCollidingWithTile = (entity: Entity, tile: number[]) => {
-    const x = TILE_SIZE * tile[1];
-    const y = TILE_SIZE * tile[0];
-    return (
-        entity.x > x + TILE_SIZE ||
-        entity.x + entity.image.width < x ||
-        entity.y > y + TILE_SIZE ||
-        entity.y + entity.image.height < y
-    );
-};
+shared.currentEntities.push(testEnemy2);
 
 class Pathfinder {
     static getBestDirection = (current: number[], target: number[], room: Room) => {

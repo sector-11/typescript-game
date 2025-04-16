@@ -1,3 +1,4 @@
+import Entity from "./entity";
 import { map, Room } from "./map";
 
 class Shared {
@@ -5,6 +6,17 @@ class Shared {
 
     currentRoom: Room = <Room>map[2][2];
     currentRoomIndex: number[] = [2, 2];
+    currentEntities: Entity[] = [];
+    keys: { [Key: string]: boolean } = {
+        w: false,
+        a: false,
+        s: false,
+        d: false,
+        ArrowUp: false,
+        ArrowDown: false,
+        ArrowLeft: false,
+        ArrowRight: false,
+    };
 
     private constructor() {}
 
