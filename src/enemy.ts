@@ -4,6 +4,9 @@ import Pathfinder from "./pathfinder";
 import { shared } from "./shared";
 import { TILE_SIZE } from "./constants";
 import type { Room } from "./map";
+import { entitiesNotColliding } from "./collision";
+import Player from "./player";
+import Shot from "./shot";
 
 export class Enemy extends Entity {
     x: number = 0;
@@ -53,6 +56,7 @@ export class Enemy extends Entity {
                 this.y = this.previousY;
                 break;
         }
+        this.handleEntityCollision();
 
         this.updatePrevPosition();
     }
@@ -69,5 +73,23 @@ export class Enemy extends Entity {
             }
         }
         return -1;
+    }
+
+    handleEntityCollision(): void {
+        for (const entity of shared.currentEntities) {
+            if (!entitiesNotColliding(this, entity)) {
+                if (
+                    (entity instanceof Enemy &&
+                        shared.currentEntities.indexOf(this) !=
+                            shared.currentEntities.indexOf(entity)) ||
+                    entity instanceof Player
+                ) {
+                    this.x = this.previousX;
+                    this.y = this.previousY;
+                } else if (entity instanceof Shot) {
+                    console.log("ENEMY HIT");
+                }
+            }
+        }
     }
 }

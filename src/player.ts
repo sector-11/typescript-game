@@ -1,4 +1,6 @@
+import { entitiesNotColliding } from "./collision";
 import { TILE_SIZE, ROOM_WIDTH, ROOM_HEIGHT, BULLET_IMAGE } from "./constants";
+import { Enemy } from "./enemy";
 import Entity from "./entity";
 import { map, Room } from "./map";
 import { shared } from "./shared";
@@ -54,6 +56,7 @@ export default class Player extends Entity {
                 break;
         }
 
+        this.handleEntityCollision();
         this.updatePrevPosition();
         this.shoot();
     }
@@ -95,6 +98,17 @@ export default class Player extends Entity {
             }
         }
         return -1;
+    }
+
+    handleEntityCollision(): void {
+        for (const entity of shared.currentEntities) {
+            if (!entitiesNotColliding(this, entity)) {
+                if (entity instanceof Enemy) {
+                    this.previousX = this.x;
+                    this.previousY = this.y;
+                }
+            }
+        }
     }
 
     goThroughDoor() {

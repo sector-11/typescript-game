@@ -8,6 +8,7 @@ export default abstract class Entity {
 
     abstract move(): void;
     abstract checkTileCollision(room: Room): void | number;
+    abstract handleEntityCollision(): void;
 
     draw() {
         context.drawImage(this.image, this.x, this.y, this.image.width, this.image.height);

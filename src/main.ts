@@ -13,6 +13,7 @@ import { shared } from "./shared";
 import Player from "./player";
 import { Enemy } from "./enemy";
 import { initializeButtons } from "./mobile";
+import Entity from "./entity";
 
 shared.currentRoom = <Room>map[2][2];
 shared.currentRoomIndex = [2, 2];
