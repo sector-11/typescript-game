@@ -2,7 +2,7 @@ import { entitiesNotColliding } from "./collision";
 import { TILE_SIZE, ROOM_WIDTH, ROOM_HEIGHT, BULLET_IMAGE } from "./constants";
 import { Enemy } from "./enemy";
 import Entity from "./entity";
-import { map, Room } from "./map";
+import { loadRoom, Room } from "./map";
 import { shared } from "./shared";
 import Shot from "./shot";
 import { getCurrentTile, getNeigbouringTiles, isNotCollidingWithTile } from "./tiles";
@@ -119,38 +119,24 @@ export default class Player extends Entity {
         const currentTile = getCurrentTile(this);
         if (currentTile[0] == 1) {
             //top
-            shared.currentRoom = map[shared.currentRoomIndex[0] - 1][
-                shared.currentRoomIndex[1]
-            ] as Room;
-            shared.currentRoomIndex[0]--;
+            loadRoom([shared.currentRoomIndex[0] - 1, shared.currentRoomIndex[1]]);
             this.x = Math.floor(ROOM_WIDTH / 2) * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
             this.y = (ROOM_HEIGHT - 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
         } else if (currentTile[0] == ROOM_HEIGHT - 2) {
             //bottom
-            shared.currentRoom = map[shared.currentRoomIndex[0] + 1][
-                shared.currentRoomIndex[1]
-            ] as Room;
-            shared.currentRoomIndex[0]++;
+            loadRoom([shared.currentRoomIndex[0] + 1, shared.currentRoomIndex[1]]);
             this.x = Math.floor(ROOM_WIDTH / 2) * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
             this.y = 1 * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
         } else if (currentTile[1] == 1) {
             //left
-            shared.currentRoom = map[shared.currentRoomIndex[0]][
-                shared.currentRoomIndex[1] - 1
-            ] as Room;
-            shared.currentRoomIndex[1]--;
+            loadRoom([shared.currentRoomIndex[0], shared.currentRoomIndex[1] - 1]);
             this.x = (ROOM_WIDTH - 2) * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
             this.y = Math.floor(ROOM_HEIGHT / 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
         } else if (currentTile[1] == ROOM_WIDTH - 2) {
             //right
-            shared.currentRoom = map[shared.currentRoomIndex[0]][
-                shared.currentRoomIndex[1] + 1
-            ] as Room;
-            shared.currentRoomIndex[1]++;
+            loadRoom([shared.currentRoomIndex[0], shared.currentRoomIndex[1] + 1]);
             this.x = 1 * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
             this.y = Math.floor(ROOM_HEIGHT / 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
         }
-        shared.currentEntities.length = 0;
-        shared.currentEntities.push(this);
     }
 }
