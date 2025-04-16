@@ -1,3 +1,7 @@
+import { ENEMY_IMAGE, ROOM_HEIGHT, ROOM_WIDTH } from "./constants";
+import { Enemy } from "./enemy";
+import { shared } from "./shared";
+
 export const map: Array<Room | number>[] = [
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
@@ -26,11 +30,11 @@ map[2][2] = {
     startEntities: [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ],
@@ -60,3 +64,20 @@ map[3][2] = {
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ],
 } as Room;
+
+export const loadRoom = (roomIndex: number[]) => {
+    shared.currentRoom = <Room>map[roomIndex[0]][roomIndex[1]];
+    shared.currentEntities.length = 0;
+    shared.currentEntities.push(shared.player);
+    loadEntities(shared.currentRoom);
+};
+
+const loadEntities = (room: Room) => {
+    for (let row = 0; row < ROOM_HEIGHT; row++) {
+        for (let column = 0; column < ROOM_WIDTH; column++) {
+            if (room.startEntities[row][column] === 1) {
+                shared.currentEntities.push(new Enemy(column, row, ENEMY_IMAGE, 3));
+            }
+        }
+    }
+};

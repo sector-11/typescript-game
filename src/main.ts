@@ -6,13 +6,11 @@ import {
     canvas,
     context,
     PLAYER_IMAGE,
-    ENEMY_IMAGE,
     START_ROOM,
 } from "./constants";
-import { map, Room } from "./map";
+import { loadRoom, Room } from "./map";
 import { shared } from "./shared";
 import Player from "./player";
-import { Enemy } from "./enemy";
 import { initializeButtons } from "./mobile";
 
 canvas.width = TILE_SIZE * ROOM_WIDTH;
@@ -66,20 +64,3 @@ const drawTerrain = (room: Room) => {
 
 shared.player = new Player(7, 4, PLAYER_IMAGE, 4, 500);
 shared.currentEntities.push(shared.player);
-
-const loadRoom = (roomIndex: number[]) => {
-    shared.currentRoom = <Room>map[roomIndex[0]][roomIndex[1]];
-    shared.currentEntities.length = 0;
-    shared.currentEntities.push(shared.player);
-    loadEntities(shared.currentRoom);
-};
-
-const loadEntities = (room: Room) => {
-    for (let row = 0; row < ROOM_HEIGHT; row++) {
-        for (let column = 0; column < ROOM_WIDTH; column++) {
-            if (room.startEntities[row][column] === 1) {
-                shared.currentEntities.push(new Enemy(column, row, ENEMY_IMAGE, 3));
-            }
-        }
-    }
-};
