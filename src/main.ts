@@ -7,14 +7,13 @@ import {
     context,
     PLAYER_IMAGE,
     ENEMY_IMAGE,
+    START_ROOM,
 } from "./constants";
 import { map, Room } from "./map";
 import { shared } from "./shared";
 import Player from "./player";
 import { Enemy } from "./enemy";
 import { initializeButtons } from "./mobile";
-
-const START_ROOM = [2, 2];
 
 canvas.width = TILE_SIZE * ROOM_WIDTH;
 canvas.height = TILE_SIZE * ROOM_HEIGHT;
