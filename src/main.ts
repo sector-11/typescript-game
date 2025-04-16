@@ -14,8 +14,7 @@ import Player from "./player";
 import { Enemy } from "./enemy";
 import { initializeButtons } from "./mobile";
 
-shared.currentRoom = <Room>map[2][2];
-shared.currentRoomIndex = [2, 2];
+const START_ROOM = [2, 2];
 
 canvas.width = TILE_SIZE * ROOM_WIDTH;
 canvas.height = TILE_SIZE * ROOM_HEIGHT;
@@ -32,7 +31,7 @@ const update = () => {
 
 window.onload = () => {
     initializeButtons();
-    loadEntities(shared.currentRoom);
+    loadRoom(START_ROOM);
     setTimeout(() => window.requestAnimationFrame(update), 1000);
 };
 
@@ -68,6 +67,13 @@ const drawTerrain = (room: Room) => {
 
 shared.player = new Player(7, 4, PLAYER_IMAGE, 4, 500);
 shared.currentEntities.push(shared.player);
+
+const loadRoom = (roomIndex: number[]) => {
+    shared.currentRoom = <Room>map[roomIndex[0]][roomIndex[1]];
+    shared.currentEntities.length = 0;
+    shared.currentEntities.push(shared.player);
+    loadEntities(shared.currentRoom);
+};
 
 const loadEntities = (room: Room) => {
     for (let row = 0; row < ROOM_HEIGHT; row++) {
