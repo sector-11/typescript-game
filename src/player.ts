@@ -20,8 +20,12 @@ export default class Player extends Entity {
     constructor(x: number, y: number, image: HTMLImageElement, speed: number, fireDelay: number) {
         super();
         this.image = image;
-        this.x = x * TILE_SIZE + (TILE_SIZE - this.image.naturalWidth * 2) / 2;
-        this.y = y * TILE_SIZE + (TILE_SIZE - this.image.naturalHeight * 2) / 2;
+        setTimeout(() => {
+            this.x = x * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
+            this.y = y * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
+            this.previousX = this.x;
+            this.previousY = this.y;
+        }, 100);
         this.speed = speed;
         this.previousX = this.x;
         this.previousY = this.y;
