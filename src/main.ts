@@ -1,77 +1,11 @@
 import "./style.scss";
+import { ROOM_WIDTH, ROOM_HEIGHT, TILE_SIZE, canvas, context } from "./constants";
+import { map, Room } from "./map";
+import { shared } from "./shared";
 
-const ROOM_WIDTH = 15;
-const ROOM_HEIGHT = 9;
-const TILE_SIZE = 100;
+shared.currentRoom = <Room>map[2][2];
+shared.currentRoomIndex = [2, 2];
 
-const map: Array<Room | number>[] = [
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-];
-
-type Room = {
-    terrain: number[][];
-    startEntities: number[][];
-};
-
-map[2][2] = {
-    terrain: [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0],
-    ],
-    startEntities: [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    ],
-} as Room;
-
-map[3][2] = {
-    terrain: [
-        [0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    ],
-    startEntities: [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    ],
-} as Room;
-
-let currentRoom: Room = map[2][2];
-let currentRoomIndex: number[] = [2, 2];
-
-const canvas = <HTMLCanvasElement>document.getElementById("canvas");
-const context = <CanvasRenderingContext2D>canvas.getContext("2d");
 canvas.width = TILE_SIZE * ROOM_WIDTH;
 canvas.height = TILE_SIZE * ROOM_HEIGHT;
 context.imageSmoothingEnabled = false;
@@ -90,7 +24,7 @@ const keys: { [Key: string]: boolean } = {
 const currentEntities: Entity[] = [];
 
 const update = () => {
-    drawTerrain(currentRoom);
+    drawTerrain(shared.currentRoom);
     for (const entity of currentEntities) {
         entity.move();
         entity.draw();
@@ -269,7 +203,7 @@ class Player extends Entity {
             this.x += this.speed;
         }
 
-        switch (this.checkTileCollision(currentRoom)) {
+        switch (this.checkTileCollision(shared.currentRoom)) {
             case -1:
                 //do nothing
                 break;
@@ -329,26 +263,34 @@ class Player extends Entity {
         const currentTile = getCurrentTile(this);
         if (currentTile[0] == 1) {
             //top
-            currentRoom = map[currentRoomIndex[0] - 1][currentRoomIndex[1]] as Room;
-            currentRoomIndex[0]--;
+            shared.currentRoom = map[shared.currentRoomIndex[0] - 1][
+                shared.currentRoomIndex[1]
+            ] as Room;
+            shared.currentRoomIndex[0]--;
             this.x = Math.floor(ROOM_WIDTH / 2) * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
             this.y = (ROOM_HEIGHT - 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
         } else if (currentTile[0] == ROOM_HEIGHT - 2) {
             //bottom
-            currentRoom = map[currentRoomIndex[0] + 1][currentRoomIndex[1]] as Room;
-            currentRoomIndex[0]++;
+            shared.currentRoom = map[shared.currentRoomIndex[0] + 1][
+                shared.currentRoomIndex[1]
+            ] as Room;
+            shared.currentRoomIndex[0]++;
             this.x = Math.floor(ROOM_WIDTH / 2) * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
             this.y = 1 * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
         } else if (currentTile[1] == 1) {
             //left
-            currentRoom = map[currentRoomIndex[0]][currentRoomIndex[1] - 1] as Room;
-            currentRoomIndex[1]--;
+            shared.currentRoom = map[shared.currentRoomIndex[0]][
+                shared.currentRoomIndex[1] - 1
+            ] as Room;
+            shared.currentRoomIndex[1]--;
             this.x = (ROOM_WIDTH - 2) * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
             this.y = Math.floor(ROOM_HEIGHT / 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
         } else if (currentTile[1] == ROOM_WIDTH - 2) {
             //right
-            currentRoom = map[currentRoomIndex[0]][currentRoomIndex[1] + 1] as Room;
-            currentRoomIndex[1]++;
+            shared.currentRoom = map[shared.currentRoomIndex[0]][
+                shared.currentRoomIndex[1] + 1
+            ] as Room;
+            shared.currentRoomIndex[1]++;
             this.x = 1 * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
             this.y = Math.floor(ROOM_HEIGHT / 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
         }
@@ -376,7 +318,7 @@ class Shot extends Entity {
     move(): void {
         this.x -= this.direction[1] * this.speed;
         this.y -= this.direction[0] * this.speed;
-        this.checkTileCollision(currentRoom);
+        this.checkTileCollision(shared.currentRoom);
     }
 
     checkTileCollision(room: Room): void {
@@ -417,7 +359,7 @@ class Enemy extends Entity {
                 this.direction = Pathfinder.getBestDirection(
                     getCurrentTile(this),
                     getCurrentTile(player),
-                    currentRoom
+                    shared.currentRoom
                 );
             }
 
@@ -427,7 +369,7 @@ class Enemy extends Entity {
         this.y += this.direction[0] * this.speed;
         this.x += this.direction[1] * this.speed;
 
-        switch (this.checkTileCollision(currentRoom)) {
+        switch (this.checkTileCollision(shared.currentRoom)) {
             case -1:
                 //do nothing
                 break;
