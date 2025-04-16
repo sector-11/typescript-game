@@ -18,6 +18,7 @@ export class Enemy extends Entity {
     direction: number[] = [0, 0];
     lastDirection: number = 0;
     moveDelay: number = 50;
+    health: number = 3;
 
     constructor(x: number, y: number, image: HTMLImageElement, speed: number) {
         super();
@@ -86,10 +87,15 @@ export class Enemy extends Entity {
                 ) {
                     this.x = this.previousX;
                     this.y = this.previousY;
-                } else if (entity instanceof Shot) {
-                    console.log("ENEMY HIT");
                 }
             }
+        }
+    }
+
+    getHit(): void {
+        this.health--;
+        if (this.health <= 0) {
+            shared.currentEntities.splice(shared.currentEntities.indexOf(this), 1);
         }
     }
 }
