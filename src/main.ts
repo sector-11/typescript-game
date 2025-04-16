@@ -13,7 +13,6 @@ import { shared } from "./shared";
 import Player from "./player";
 import { Enemy } from "./enemy";
 import { initializeButtons } from "./mobile";
-import Entity from "./entity";
 
 shared.currentRoom = <Room>map[2][2];
 shared.currentRoomIndex = [2, 2];
@@ -33,6 +32,7 @@ const update = () => {
 
 window.onload = () => {
     initializeButtons();
+    loadEntities(shared.currentRoom);
     setTimeout(() => window.requestAnimationFrame(update), 1000);
 };
 
@@ -69,7 +69,12 @@ const drawTerrain = (room: Room) => {
 shared.player = new Player(7, 4, PLAYER_IMAGE, 4, 500);
 shared.currentEntities.push(shared.player);
 
-const testEnemy1 = new Enemy(2, 2, ENEMY_IMAGE, 4);
-shared.currentEntities.push(testEnemy1);
-const testEnemy2 = new Enemy(12, 6, ENEMY_IMAGE, 4);
-shared.currentEntities.push(testEnemy2);
+const loadEntities = (room: Room) => {
+    for (let row = 0; row < ROOM_HEIGHT; row++) {
+        for (let column = 0; column < ROOM_WIDTH; column++) {
+            if (room.startEntities[row][column] === 1) {
+                shared.currentEntities.push(new Enemy(column, row, ENEMY_IMAGE, 3));
+            }
+        }
+    }
+};
