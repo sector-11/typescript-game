@@ -16,6 +16,9 @@ export default class Player extends Entity {
     previousY: number;
     lastShot: number;
     fireDelay: number;
+    health: number = 5;
+    lastHit: number = 0;
+    hitCooldown: number = 500;
 
     constructor(x: number, y: number, image: HTMLImageElement, speed: number, fireDelay: number) {
         super();
@@ -107,9 +110,9 @@ export default class Player extends Entity {
     handleEntityCollision(): void {
         for (const entity of shared.currentEntities) {
             if (!entitiesNotColliding(this, entity)) {
-                if (entity instanceof Enemy) {
-                    this.previousX = this.x;
-                    this.previousY = this.y;
+                if (entity instanceof Enemy && this.lastHit <= Date.now() - this.hitCooldown) {
+                    this.getHit();
+                    this.lastHit = Date.now();
                 }
             }
         }
@@ -137,6 +140,19 @@ export default class Player extends Entity {
             loadRoom([shared.currentRoomIndex[0], shared.currentRoomIndex[1] + 1]);
             this.x = 1 * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
             this.y = Math.floor(ROOM_HEIGHT / 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
+        }
+    }
+
+    getHit() {
+        this.health--;
+        if (this.health <= 0) {
+            //game over
+        }
+    }
+
+    heal() {
+        if (this.health < 10) {
+            this.health++;
         }
     }
 }
