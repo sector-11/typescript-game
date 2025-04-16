@@ -1,5 +1,7 @@
+import { PLAYER_IMAGE } from "./constants";
 import Entity from "./entity";
 import { map, Room } from "./map";
+import Player from "./player";
 
 class Shared {
     private static instance: Shared;
@@ -17,6 +19,7 @@ class Shared {
         ArrowLeft: false,
         ArrowRight: false,
     };
+    player: Player = new Player(7, 4, PLAYER_IMAGE, 4, 500);
 
     private constructor() {}
 

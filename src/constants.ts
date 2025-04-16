@@ -18,3 +18,10 @@ BULLET_IMAGE.onload = () => {
     BULLET_IMAGE.width = BULLET_IMAGE.naturalWidth * 2;
     BULLET_IMAGE.height = BULLET_IMAGE.naturalHeight * 2;
 };
+
+export const ENEMY_IMAGE = new Image();
+ENEMY_IMAGE.src = "./src/assets/monster-lizard.png";
+ENEMY_IMAGE.onload = () => {
+    ENEMY_IMAGE.width = ENEMY_IMAGE.naturalWidth * 2;
+    ENEMY_IMAGE.height = ENEMY_IMAGE.naturalHeight * 2;
+};

@@ -1,11 +1,17 @@
 import "./style.scss";
-import { ROOM_WIDTH, ROOM_HEIGHT, TILE_SIZE, canvas, context, PLAYER_IMAGE } from "./constants";
+import {
+    ROOM_WIDTH,
+    ROOM_HEIGHT,
+    TILE_SIZE,
+    canvas,
+    context,
+    PLAYER_IMAGE,
+    ENEMY_IMAGE,
+} from "./constants";
 import { map, Room } from "./map";
 import { shared } from "./shared";
-import Entity from "./entity";
-import { getCurrentTile, getNeigbouringTiles, isNotCollidingWithTile } from "./tiles";
 import Player from "./player";
-import Pathfinder from "./pathfinder";
+import { Enemy } from "./enemy";
 
 shared.currentRoom = <Room>map[2][2];
 shared.currentRoomIndex = [2, 2];
@@ -124,82 +130,8 @@ const drawTerrain = (room: Room) => {
     }
 };
 
-const ENEMY_IMAGE = new Image();
-ENEMY_IMAGE.src = "./src/assets/monster-lizard.png";
-ENEMY_IMAGE.onload = () => {
-    ENEMY_IMAGE.width = ENEMY_IMAGE.naturalWidth * 2;
-    ENEMY_IMAGE.height = ENEMY_IMAGE.naturalHeight * 2;
-};
-
-class Enemy extends Entity {
-    x: number = 0;
-    y: number = 0;
-    image: HTMLImageElement;
-    speed: number;
-    previousX: number;
-    previousY: number;
-    direction: number[] = [0, 0];
-    lastDirection: number = 0;
-    moveDelay: number = 50;
-
-    constructor(x: number, y: number, image: HTMLImageElement, speed: number) {
-        super();
-        this.image = image;
-        this.x = x * TILE_SIZE + (TILE_SIZE - this.image.naturalWidth * 2) / 2;
-        this.y = y * TILE_SIZE + (TILE_SIZE - this.image.naturalHeight * 2) / 2;
-        this.speed = speed;
-        this.previousX = this.x;
-        this.previousY = this.y;
-    }
-
-    move() {
-        if (this.lastDirection <= Date.now() - this.moveDelay) {
-            let myTile = getCurrentTile(this);
-            let playerTile = getCurrentTile(player);
-            if (myTile[0] != playerTile[0] || myTile[1] != playerTile[1]) {
-                this.direction = Pathfinder.getBestDirection(
-                    getCurrentTile(this),
-                    getCurrentTile(player),
-                    shared.currentRoom
-                );
-            }
-
-            this.lastDirection = Date.now();
-        }
-
-        this.y += this.direction[0] * this.speed;
-        this.x += this.direction[1] * this.speed;
-
-        switch (this.checkTileCollision(shared.currentRoom)) {
-            case -1:
-                //do nothing
-                break;
-            default:
-                this.x = this.previousX;
-                this.y = this.previousY;
-                break;
-        }
-
-        this.updatePrevPosition();
-    }
-
-    updatePrevPosition() {
-        this.previousX = this.x;
-        this.previousY = this.y;
-    }
-
-    checkTileCollision(room: Room): number {
-        for (const tile of getNeigbouringTiles(getCurrentTile(this))) {
-            if (!isNotCollidingWithTile(this, tile) && room.terrain[tile[0]][tile[1]] != 1) {
-                return room.terrain[tile[0]][tile[1]];
-            }
-        }
-        return -1;
-    }
-}
-
-const player = new Player(7, 4, PLAYER_IMAGE, 4, 500);
-shared.currentEntities.push(player);
+shared.player = new Player(7, 4, PLAYER_IMAGE, 4, 500);
+shared.currentEntities.push(shared.player);
 
 const testEnemy1 = new Enemy(2, 2, ENEMY_IMAGE, 4);
 shared.currentEntities.push(testEnemy1);
