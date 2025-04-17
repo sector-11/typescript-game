@@ -61,3 +61,17 @@ DOOR_IMAGE.onload = () => {
     DOOR_IMAGE.width = TILE_SIZE;
     DOOR_IMAGE.height = TILE_SIZE;
 };
+
+export const BG_IMAGE = new Image();
+BG_IMAGE.src = "./src/assets/bg.png";
+BG_IMAGE.onload = () => {
+    BG_IMAGE.width = TILE_SIZE;
+    BG_IMAGE.height = TILE_SIZE;
+};
+
+export const BG_BOTTOM_IMAGE = new Image();
+BG_BOTTOM_IMAGE.src = "./src/assets/bg-bottom.png";
+BG_BOTTOM_IMAGE.onload = () => {
+    BG_BOTTOM_IMAGE.width = TILE_SIZE;
+    BG_BOTTOM_IMAGE.height = TILE_SIZE;
+};

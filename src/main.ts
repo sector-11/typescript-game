@@ -12,7 +12,7 @@ import { loadRoom } from "./map";
 import { shared } from "./shared";
 import Player from "./player";
 import { initializeButtons } from "./mobile";
-import { update } from "./gameloop";
+import { titleScreen } from "./drawscreens";
 
 canvas.width = TILE_SIZE * ROOM_WIDTH;
 canvas.height = TILE_SIZE * ROOM_HEIGHT;
@@ -23,7 +23,7 @@ window.onload = () => {
     loadRoom(START_ROOM);
     setTimeout(() => {
         document.getElementById("preload-styles")?.remove();
-        update();
+        titleScreen();
     }, 200);
 };
 
