@@ -4,16 +4,18 @@ import { generationHandler } from "./maplayout";
 import { layoutToMap } from "./roomplacement";
 import { shared } from "./shared";
 
-const mapLayout = generationHandler();
-export const map: Room[][] = layoutToMap(mapLayout);
-
 export type Room = {
     terrain: number[][];
     startEntities: number[][];
 };
 
+export const getNewMap = () => {
+    const mapLayout = generationHandler();
+    return layoutToMap(mapLayout);
+};
+
 export const loadRoom = (roomIndex: number[]) => {
-    shared.currentRoom = <Room>map[roomIndex[0]][roomIndex[1]];
+    shared.currentRoom = <Room>shared.map[roomIndex[0]][roomIndex[1]];
     shared.currentRoomIndex = roomIndex;
     shared.currentEntities.length = 0;
     shared.currentEntities.push(shared.player);

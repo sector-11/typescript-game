@@ -1,6 +1,6 @@
 import { PLAYER_IMAGE } from "./constants";
 import Entity from "./entity";
-import { Room } from "./map";
+import { getNewMap, Room } from "./map";
 import Player from "./player";
 
 class Shared {
@@ -21,6 +21,7 @@ class Shared {
     };
     player: Player = new Player(7, 4, PLAYER_IMAGE, 4, 500);
     isGameOver: boolean = false;
+    map: Room[][] = getNewMap();
 
     private constructor() {}
 

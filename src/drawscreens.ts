@@ -6,8 +6,7 @@ import {
     ROOM_WIDTH,
     TILE_SIZE,
 } from "./constants";
-import { update } from "./gameloop";
-import { shared } from "./shared";
+import { newGame } from "./gameloop";
 
 export const titleScreen = () => {
     drawTextScreenBG();
@@ -49,7 +48,7 @@ export const titleScreen = () => {
 
     let continueAfterClick = () => {
         window.removeEventListener("click", continueAfterClick);
-        window.requestAnimationFrame(update);
+        newGame();
     };
 
     window.addEventListener("click", continueAfterClick);
@@ -70,8 +69,7 @@ export const gameOverScreen = () => {
 
     let continueAfterClick = () => {
         window.removeEventListener("click", continueAfterClick);
-        shared.isGameOver = false;
-        window.requestAnimationFrame(update);
+        newGame();
     };
 
     window.addEventListener("click", continueAfterClick);

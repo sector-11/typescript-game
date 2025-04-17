@@ -4,15 +4,28 @@ import {
     FLOOR_IMAGE,
     HEART_IMAGE,
     HEARTS_POSITION,
+    PLAYER_IMAGE,
     ROOM_HEIGHT,
     ROOM_WIDTH,
+    START_ROOM,
     TILE_SIZE,
     WALL_HORIZ_IMAGE,
     WALL_IMAGE,
 } from "./constants";
 import { gameOverScreen } from "./drawscreens";
-import { Room } from "./map";
+import { getNewMap, loadRoom, Room } from "./map";
+import Player from "./player";
 import { shared } from "./shared";
+
+export const newGame = () => {
+    if (shared.isGameOver) {
+        shared.map = getNewMap();
+    }
+    shared.player = new Player(7, 4, PLAYER_IMAGE, 4, 500);
+    loadRoom(START_ROOM);
+    shared.isGameOver = false;
+    window.requestAnimationFrame(update);
+};
 
 export const update = () => {
     if (shared.isGameOver) {
