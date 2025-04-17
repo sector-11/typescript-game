@@ -1,15 +1,16 @@
 import { PLAYER_IMAGE } from "./constants";
 import Entity from "./entity";
-import { getNewMap, Room } from "./map";
+import { Room } from "./map";
 import Player from "./player";
 
 class Shared {
     private static instance: Shared;
 
-    currentRoom: Room = { terrain: [], startEntities: [] };
+    currentRoom: Room = { terrain: [], startEntities: [], enemyCount: 0 };
     currentRoomIndex: number[] = [];
     currentEntities: Entity[] = [];
     roomEnemies: number = 0;
+    floorEnemies: number = 0;
     keys: { [Key: string]: boolean } = {
         w: false,
         a: false,
@@ -22,7 +23,7 @@ class Shared {
     };
     player: Player = new Player(7, 4, PLAYER_IMAGE, 4, 500);
     isGameOver: boolean = false;
-    map: Room[][] = getNewMap();
+    map: Room[][] = [];
 
     private constructor() {}
 

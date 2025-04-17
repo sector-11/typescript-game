@@ -2,9 +2,10 @@ import { ROOM_HEIGHT, ROOM_WIDTH } from "./constants";
 import { Room } from "./map";
 import { generateBoundedRandomInt, MAP_HEIGHT, MAP_WIDTH, roomTest } from "./maplayout";
 import { roomLayouts, startRoom } from "./roomlayouts";
+import { shared } from "./shared";
 
 export const layoutToMap = (layout: number[][]) => {
-    const EMPTY_ROOM = { terrain: [], startEntities: [] };
+    const EMPTY_ROOM = { terrain: [], startEntities: [], enemyCount: 0 };
     const map: Room[][] = [
         [EMPTY_ROOM, EMPTY_ROOM, EMPTY_ROOM, EMPTY_ROOM, EMPTY_ROOM],
         [EMPTY_ROOM, EMPTY_ROOM, EMPTY_ROOM, EMPTY_ROOM, EMPTY_ROOM],
@@ -21,6 +22,7 @@ export const layoutToMap = (layout: number[][]) => {
             roomLayout = cloneRoom(roomLayouts[generateBoundedRandomInt(1, 9).toString()]);
         }
         const finalRoom = placeDoors(room, roomLayout);
+        shared.floorEnemies += finalRoom.enemyCount;
 
         map[room.room[0]][room.room[1]] = finalRoom;
     }
@@ -29,7 +31,7 @@ export const layoutToMap = (layout: number[][]) => {
 };
 
 const cloneRoom = (room: Room): Room => {
-    let clone: Room = { terrain: [], startEntities: [] };
+    let clone: Room = { terrain: [], startEntities: [], enemyCount: 0 };
 
     room.terrain.forEach((el) => {
         clone.terrain.push([...el]);
@@ -37,6 +39,7 @@ const cloneRoom = (room: Room): Room => {
     room.startEntities.forEach((el) => {
         clone.startEntities.push([...el]);
     });
+    clone.enemyCount = room.enemyCount;
 
     return clone;
 };

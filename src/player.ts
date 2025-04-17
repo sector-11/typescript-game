@@ -3,6 +3,7 @@ import { TILE_SIZE, ROOM_WIDTH, ROOM_HEIGHT, BULLET_IMAGE } from "./constants";
 import { Enemy } from "./enemy";
 import Entity from "./entity";
 import { loadRoom, Room } from "./map";
+import { startRoom } from "./roomlayouts";
 import { shared } from "./shared";
 import Shot from "./shot";
 import { getCurrentTile, getNeigbouringTiles, isNotCollidingWithTile } from "./tiles";
@@ -124,6 +125,7 @@ export default class Player extends Entity {
             // do nothing
         } else {
             const currentTile = getCurrentTile(this);
+            shared.currentRoom.startEntities = startRoom.startEntities;
             if (currentTile[0] == 1) {
                 //top
                 loadRoom([shared.currentRoomIndex[0] - 1, shared.currentRoomIndex[1]]);

@@ -13,7 +13,7 @@ import {
     WALL_HORIZ_IMAGE,
     WALL_IMAGE,
 } from "./constants";
-import { gameOverScreen } from "./drawscreens";
+import { gameOverScreen, winScreen } from "./drawscreens";
 import { getNewMap, loadRoom, Room } from "./map";
 import Player from "./player";
 import { shared } from "./shared";
@@ -31,6 +31,8 @@ export const newGame = () => {
 export const update = () => {
     if (shared.isGameOver) {
         gameOverScreen();
+    } else if (shared.floorEnemies < 1) {
+        winScreen();
     } else {
         drawTerrain(shared.currentRoom);
         for (const entity of shared.currentEntities) {

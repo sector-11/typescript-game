@@ -7,9 +7,11 @@ import { shared } from "./shared";
 export type Room = {
     terrain: number[][];
     startEntities: number[][];
+    enemyCount: number;
 };
 
 export const getNewMap = () => {
+    shared.floorEnemies = 0;
     const mapLayout = generationHandler();
     return layoutToMap(mapLayout);
 };

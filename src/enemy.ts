@@ -6,6 +6,7 @@ import { TILE_SIZE } from "./constants";
 import type { Room } from "./map";
 import { entitiesNotColliding } from "./collision";
 import Player from "./player";
+import { winScreen } from "./drawscreens";
 
 export class Enemy extends Entity {
     x: number = 0;
@@ -96,6 +97,7 @@ export class Enemy extends Entity {
         if (!this.isAlreadyDying) {
             this.isAlreadyDying = true;
             shared.roomEnemies--;
+            shared.floorEnemies--;
             shared.currentEntities.splice(shared.currentEntities.indexOf(this), 1);
         }
     }

@@ -7,6 +7,7 @@ import {
     TILE_SIZE,
 } from "./constants";
 import { newGame } from "./gameloop";
+import { shared } from "./shared";
 
 export const titleScreen = () => {
     drawTextScreenBG();
@@ -68,6 +69,28 @@ export const gameOverScreen = () => {
     context.strokeText("CLICK OR TAP TO TRY AGAIN", TILE_SIZE * 2, TILE_SIZE * 8);
 
     let continueAfterClick = () => {
+        window.removeEventListener("click", continueAfterClick);
+        newGame();
+    };
+
+    window.addEventListener("click", continueAfterClick);
+};
+
+export const winScreen = () => {
+    drawTextScreenBG();
+    context.font = "bold 72pt sans-serif";
+    context.fillStyle = "#000000";
+    context.strokeStyle = "#ffffff";
+    context.lineWidth = 2;
+    context.fillText("FLOOR CLEAR", TILE_SIZE * 3.75, TILE_SIZE * 3);
+    context.strokeText("FLOOR CLEAR", TILE_SIZE * 3.75, TILE_SIZE * 3);
+
+    context.font = "bold 50pt sans-serif";
+    context.fillText("CLICK OR TAP FOR THE NEXT FLOOR", TILE_SIZE * 0.5, TILE_SIZE * 8);
+    context.strokeText("CLICK OR TAP FOR THE NEXT FLOOR", TILE_SIZE * 0.5, TILE_SIZE * 8);
+
+    let continueAfterClick = () => {
+        shared.isGameOver = true;
         window.removeEventListener("click", continueAfterClick);
         newGame();
     };
