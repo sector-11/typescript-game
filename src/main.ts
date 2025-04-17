@@ -36,7 +36,10 @@ const update = () => {
 window.onload = () => {
     initializeButtons();
     loadRoom(START_ROOM);
-    setTimeout(() => window.requestAnimationFrame(update), 1000);
+    setTimeout(() => {
+        document.getElementById("preload-styles")?.remove();
+        window.requestAnimationFrame(update);
+    }, 200);
 };
 
 window.addEventListener("keydown", (ev) => {

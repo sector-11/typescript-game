@@ -5,8 +5,38 @@
         <link rel="icon" type="image/svg+xml" href="/vite.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>TS Game</title>
+        <style id="preload-styles">
+            .game {
+                display: none;
+            }
+
+            .rotate {
+                display: none;
+            }
+
+            .preload {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: 100vh;
+                background-color: black;
+            }
+
+            .preload__text {
+                padding: 1% 10%;
+                font-family: Arial, Helvetica, sans-serif;
+                color: white;
+                text-align: center;
+                size: 2rem;
+            }
+        </style>
     </head>
     <body>
+        <div class="preload">
+            <h1 class="preload__text">Loading...</h1>
+        </div>
         <div class="game">
             <div class="controls controls--left">
                 <button id="left-pad-up" class="controls__button controls__button--up"></button>
