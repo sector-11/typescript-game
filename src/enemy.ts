@@ -6,7 +6,6 @@ import { TILE_SIZE } from "./constants";
 import type { Room } from "./map";
 import { entitiesNotColliding } from "./collision";
 import Player from "./player";
-import Shot from "./shot";
 
 export class Enemy extends Entity {
     x: number = 0;
@@ -19,6 +18,7 @@ export class Enemy extends Entity {
     lastDirection: number = 0;
     moveDelay: number = 50;
     health: number = 3;
+    isAlreadyDying: boolean = false;
 
     constructor(x: number, y: number, image: HTMLImageElement, speed: number) {
         super();
@@ -92,10 +92,17 @@ export class Enemy extends Entity {
         }
     }
 
+    die() {
+        if (!this.isAlreadyDying) {
+            this.isAlreadyDying = true;
+            shared.currentEntities.splice(shared.currentEntities.indexOf(this), 1);
+        }
+    }
+
     getHit(): void {
         this.health--;
         if (this.health <= 0) {
-            shared.currentEntities.splice(shared.currentEntities.indexOf(this), 1);
+            this.die();
         }
     }
 }

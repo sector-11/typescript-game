@@ -11,6 +11,7 @@ export default class Shot extends Entity {
     image: HTMLImageElement;
     speed: number;
     direction: number[];
+    isAlreadyDying: boolean = false;
 
     constructor(x: number, y: number, image: HTMLImageElement, speed: number, direction: number[]) {
         super();
@@ -28,10 +29,17 @@ export default class Shot extends Entity {
         this.handleEntityCollision();
     }
 
+    die() {
+        if (!this.isAlreadyDying) {
+            this.isAlreadyDying = true;
+            shared.currentEntities.splice(shared.currentEntities.indexOf(this), 1);
+        }
+    }
+
     checkTileCollision(room: Room): void {
         for (const tile of getNeigbouringTiles(getCurrentTile(this))) {
             if (!isNotCollidingWithTile(this, tile) && room.terrain[tile[0]][tile[1]] != 1) {
-                shared.currentEntities.splice(shared.currentEntities.indexOf(this), 1);
+                this.die();
             }
         }
     }
@@ -41,7 +49,7 @@ export default class Shot extends Entity {
             if (!entitiesNotColliding(this, entity)) {
                 if (entity instanceof Enemy) {
                     entity.getHit();
-                    shared.currentEntities.splice(shared.currentEntities.indexOf(this), 1);
+                    this.die();
                 }
             }
         }
