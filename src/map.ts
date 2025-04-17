@@ -23,10 +23,12 @@ export const loadRoom = (roomIndex: number[]) => {
 };
 
 const loadEntities = (room: Room) => {
+    shared.roomEnemies = 0;
     for (let row = 0; row < ROOM_HEIGHT; row++) {
         for (let column = 0; column < ROOM_WIDTH; column++) {
             if (room.startEntities[row][column] === 1) {
                 shared.currentEntities.push(new Enemy(column, row, ENEMY_IMAGE, 3));
+                shared.roomEnemies++;
             }
         }
     }

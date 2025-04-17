@@ -1,5 +1,6 @@
 import {
     context,
+    DOOR_CLOSED_IMAGE,
     DOOR_IMAGE,
     FLOOR_IMAGE,
     HEART_IMAGE,
@@ -85,7 +86,7 @@ const drawTerrain = (room: Room) => {
                         WALL_IMAGE.height
                     );
                     context.drawImage(
-                        DOOR_IMAGE,
+                        shared.roomEnemies > 0 ? DOOR_CLOSED_IMAGE : DOOR_IMAGE,
                         TILE_SIZE * column,
                         TILE_SIZE * row,
                         DOOR_IMAGE.width,

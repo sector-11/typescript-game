@@ -9,6 +9,7 @@ class Shared {
     currentRoom: Room = { terrain: [], startEntities: [] };
     currentRoomIndex: number[] = [];
     currentEntities: Entity[] = [];
+    roomEnemies: number = 0;
     keys: { [Key: string]: boolean } = {
         w: false,
         a: false,

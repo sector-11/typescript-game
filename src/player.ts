@@ -54,6 +54,8 @@ export default class Player extends Entity {
                 //do nothing
                 break;
             case 9:
+                this.x = this.previousX;
+                this.y = this.previousY;
                 this.goThroughDoor();
                 break;
             default:
@@ -118,27 +120,35 @@ export default class Player extends Entity {
     }
 
     goThroughDoor() {
-        const currentTile = getCurrentTile(this);
-        if (currentTile[0] == 1) {
-            //top
-            loadRoom([shared.currentRoomIndex[0] - 1, shared.currentRoomIndex[1]]);
-            this.x = Math.floor(ROOM_WIDTH / 2) * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
-            this.y = (ROOM_HEIGHT - 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
-        } else if (currentTile[0] == ROOM_HEIGHT - 2) {
-            //bottom
-            loadRoom([shared.currentRoomIndex[0] + 1, shared.currentRoomIndex[1]]);
-            this.x = Math.floor(ROOM_WIDTH / 2) * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
-            this.y = 1 * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
-        } else if (currentTile[1] == 1) {
-            //left
-            loadRoom([shared.currentRoomIndex[0], shared.currentRoomIndex[1] - 1]);
-            this.x = (ROOM_WIDTH - 2) * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
-            this.y = Math.floor(ROOM_HEIGHT / 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
-        } else if (currentTile[1] == ROOM_WIDTH - 2) {
-            //right
-            loadRoom([shared.currentRoomIndex[0], shared.currentRoomIndex[1] + 1]);
-            this.x = 1 * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
-            this.y = Math.floor(ROOM_HEIGHT / 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
+        if (shared.roomEnemies > 0) {
+            // do nothing
+        } else {
+            const currentTile = getCurrentTile(this);
+            if (currentTile[0] == 1) {
+                //top
+                loadRoom([shared.currentRoomIndex[0] - 1, shared.currentRoomIndex[1]]);
+                this.x =
+                    Math.floor(ROOM_WIDTH / 2) * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
+                this.y = (ROOM_HEIGHT - 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
+            } else if (currentTile[0] == ROOM_HEIGHT - 2) {
+                //bottom
+                loadRoom([shared.currentRoomIndex[0] + 1, shared.currentRoomIndex[1]]);
+                this.x =
+                    Math.floor(ROOM_WIDTH / 2) * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
+                this.y = 1 * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
+            } else if (currentTile[1] == 1) {
+                //left
+                loadRoom([shared.currentRoomIndex[0], shared.currentRoomIndex[1] - 1]);
+                this.x = (ROOM_WIDTH - 2) * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
+                this.y =
+                    Math.floor(ROOM_HEIGHT / 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
+            } else if (currentTile[1] == ROOM_WIDTH - 2) {
+                //right
+                loadRoom([shared.currentRoomIndex[0], shared.currentRoomIndex[1] + 1]);
+                this.x = 1 * TILE_SIZE + (TILE_SIZE - this.image.width) / 2;
+                this.y =
+                    Math.floor(ROOM_HEIGHT / 2) * TILE_SIZE + (TILE_SIZE - this.image.height) / 2;
+            }
         }
     }
 

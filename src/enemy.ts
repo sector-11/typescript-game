@@ -95,6 +95,7 @@ export class Enemy extends Entity {
     die() {
         if (!this.isAlreadyDying) {
             this.isAlreadyDying = true;
+            shared.roomEnemies--;
             shared.currentEntities.splice(shared.currentEntities.indexOf(this), 1);
         }
     }

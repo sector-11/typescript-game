@@ -62,6 +62,13 @@ DOOR_IMAGE.onload = () => {
     DOOR_IMAGE.height = TILE_SIZE;
 };
 
+export const DOOR_CLOSED_IMAGE = new Image();
+DOOR_CLOSED_IMAGE.src = "./src/assets/door-closed.png";
+DOOR_CLOSED_IMAGE.onload = () => {
+    DOOR_CLOSED_IMAGE.width = TILE_SIZE;
+    DOOR_CLOSED_IMAGE.height = TILE_SIZE;
+};
+
 export const BG_IMAGE = new Image();
 BG_IMAGE.src = "./src/assets/bg.png";
 BG_IMAGE.onload = () => {
