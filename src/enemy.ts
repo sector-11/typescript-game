@@ -6,7 +6,6 @@ import { TILE_SIZE } from "./constants";
 import type { Room } from "./map";
 import { entitiesNotColliding } from "./collision";
 import Player from "./player";
-import { winScreen } from "./drawscreens";
 
 export class Enemy extends Entity {
     x: number = 0;
@@ -47,15 +46,22 @@ export class Enemy extends Entity {
         }
 
         this.y += this.direction[0] * this.speed;
-        this.x += this.direction[1] * this.speed;
+        switch (this.checkTileCollision(shared.currentRoom)) {
+            case -1:
+                //do nothing
+                break;
+            default:
+                this.y = this.previousY;
+                break;
+        }
 
+        this.x += this.direction[1] * this.speed;
         switch (this.checkTileCollision(shared.currentRoom)) {
             case -1:
                 //do nothing
                 break;
             default:
                 this.x = this.previousX;
-                this.y = this.previousY;
                 break;
         }
         this.handleEntityCollision();

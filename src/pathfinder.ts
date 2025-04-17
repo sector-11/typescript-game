@@ -30,7 +30,7 @@ export default class Pathfinder {
     private static distanceWithPenalty = (first: number[], second: number[], room: Room) => {
         let manhattanDist = Math.abs(first[0] - second[0]) + Math.abs(first[1] - second[1]);
         let penalty = this.getPathCollisionsCount(first, second, room);
-        return manhattanDist + penalty * 10;
+        return manhattanDist + penalty * 1000;
     };
 
     private static getPathCollisionsCount = (start: number[], end: number[], room: Room) => {
