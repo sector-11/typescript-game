@@ -1,6 +1,7 @@
 export const ROOM_WIDTH = 15;
 export const ROOM_HEIGHT = 9;
-export const TILE_SIZE = 100;
+export const TILE_SIZE = 96;
+export const HEARTS_POSITION = 64;
 export const START_ROOM = [2, 2];
 
 export const canvas = <HTMLCanvasElement>document.getElementById("canvas");
@@ -25,4 +26,10 @@ ENEMY_IMAGE.src = "./src/assets/monster-lizard.png";
 ENEMY_IMAGE.onload = () => {
     ENEMY_IMAGE.width = ENEMY_IMAGE.naturalWidth * 2;
     ENEMY_IMAGE.height = ENEMY_IMAGE.naturalHeight * 2;
+};
+export const HEART_IMAGE = new Image();
+HEART_IMAGE.src = "./src/assets/heart.png";
+HEART_IMAGE.onload = () => {
+    HEART_IMAGE.width = HEART_IMAGE.naturalWidth * 2;
+    HEART_IMAGE.height = HEART_IMAGE.naturalHeight * 2;
 };

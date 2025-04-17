@@ -7,6 +7,8 @@ import {
     context,
     PLAYER_IMAGE,
     START_ROOM,
+    HEART_IMAGE,
+    HEARTS_POSITION,
 } from "./constants";
 import { loadRoom, Room } from "./map";
 import { shared } from "./shared";
@@ -23,6 +25,7 @@ const update = () => {
         entity.move();
         entity.draw();
     }
+    drawGameUI();
     window.requestAnimationFrame(update);
 };
 
@@ -59,6 +62,18 @@ const drawTerrain = (room: Room) => {
             }
             context.fillRect(TILE_SIZE * column, TILE_SIZE * row, TILE_SIZE, TILE_SIZE);
         }
+    }
+};
+
+const drawGameUI = () => {
+    for (let i = 0; i < shared.player.health; i++) {
+        context.drawImage(
+            HEART_IMAGE,
+            HEARTS_POSITION + HEART_IMAGE.width * 1.25 * i,
+            HEARTS_POSITION,
+            HEART_IMAGE.width,
+            HEART_IMAGE.height
+        );
     }
 };
 
