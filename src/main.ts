@@ -9,6 +9,10 @@ import {
     START_ROOM,
     HEART_IMAGE,
     HEARTS_POSITION,
+    WALL_IMAGE,
+    WALL_HORIZ_IMAGE,
+    FLOOR_IMAGE,
+    DOOR_IMAGE,
 } from "./constants";
 import { loadRoom, Room } from "./map";
 import { shared } from "./shared";
@@ -48,19 +52,57 @@ const drawTerrain = (room: Room) => {
         for (let column = 0; column < ROOM_WIDTH; column++) {
             switch (room.terrain[row][column]) {
                 case 0:
-                    context.fillStyle = "black";
+                    if (
+                        row < ROOM_HEIGHT - 1 &&
+                        (room.terrain[row + 1][column] == 0 || room.terrain[row + 1][column] == 9)
+                    ) {
+                        context.drawImage(
+                            WALL_IMAGE,
+                            TILE_SIZE * column,
+                            TILE_SIZE * row,
+                            WALL_IMAGE.width,
+                            WALL_IMAGE.height
+                        );
+                    } else {
+                        context.drawImage(
+                            WALL_HORIZ_IMAGE,
+                            TILE_SIZE * column,
+                            TILE_SIZE * row,
+                            WALL_HORIZ_IMAGE.width,
+                            WALL_HORIZ_IMAGE.height
+                        );
+                    }
                     break;
                 case 1:
-                    context.fillStyle = "lightgray";
+                    context.drawImage(
+                        FLOOR_IMAGE,
+                        TILE_SIZE * column,
+                        TILE_SIZE * row,
+                        FLOOR_IMAGE.width,
+                        FLOOR_IMAGE.height
+                    );
                     break;
                 case 9:
-                    context.fillStyle = "brown";
+                    context.drawImage(
+                        WALL_IMAGE,
+                        TILE_SIZE * column,
+                        TILE_SIZE * row,
+                        WALL_IMAGE.width,
+                        WALL_IMAGE.height
+                    );
+                    context.drawImage(
+                        DOOR_IMAGE,
+                        TILE_SIZE * column,
+                        TILE_SIZE * row,
+                        DOOR_IMAGE.width,
+                        DOOR_IMAGE.height
+                    );
                     break;
                 default:
                     context.fillStyle = "red";
+                    context.fillRect(TILE_SIZE * column, TILE_SIZE * row, TILE_SIZE, TILE_SIZE);
                     break;
             }
-            context.fillRect(TILE_SIZE * column, TILE_SIZE * row, TILE_SIZE, TILE_SIZE);
         }
     }
 };

@@ -33,3 +33,31 @@ HEART_IMAGE.onload = () => {
     HEART_IMAGE.width = HEART_IMAGE.naturalWidth * 2;
     HEART_IMAGE.height = HEART_IMAGE.naturalHeight * 2;
 };
+
+export const WALL_IMAGE = new Image();
+WALL_IMAGE.src = "./src/assets/wall.png";
+WALL_IMAGE.onload = () => {
+    WALL_IMAGE.width = TILE_SIZE;
+    WALL_IMAGE.height = TILE_SIZE;
+};
+
+export const WALL_HORIZ_IMAGE = new Image();
+WALL_HORIZ_IMAGE.src = "./src/assets/wall-horiz.png";
+WALL_HORIZ_IMAGE.onload = () => {
+    WALL_HORIZ_IMAGE.width = TILE_SIZE;
+    WALL_HORIZ_IMAGE.height = TILE_SIZE;
+};
+
+export const FLOOR_IMAGE = new Image();
+FLOOR_IMAGE.src = "./src/assets/floor.png";
+FLOOR_IMAGE.onload = () => {
+    FLOOR_IMAGE.width = TILE_SIZE;
+    FLOOR_IMAGE.height = TILE_SIZE;
+};
+
+export const DOOR_IMAGE = new Image();
+DOOR_IMAGE.src = "./src/assets/door-open.png";
+DOOR_IMAGE.onload = () => {
+    DOOR_IMAGE.width = TILE_SIZE;
+    DOOR_IMAGE.height = TILE_SIZE;
+};
