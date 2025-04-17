@@ -101,7 +101,9 @@ export class Enemy extends Entity {
 
     getHit(): void {
         this.health--;
+        shared.player.score += 50;
         if (this.health <= 0) {
+            shared.player.score += 150;
             this.die();
         }
     }

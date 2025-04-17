@@ -19,6 +19,7 @@ export default class Player extends Entity {
     health: number = 5;
     lastHit: number = 0;
     hitCooldown: number = 500;
+    score: number = 0;
 
     constructor(x: number, y: number, image: HTMLImageElement, speed: number, fireDelay: number) {
         super();
@@ -144,6 +145,7 @@ export default class Player extends Entity {
     getHit() {
         this.health--;
         if (this.health <= 0) {
+            this.score -= 100;
             shared.isGameOver = true;
         }
     }

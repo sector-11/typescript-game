@@ -111,4 +111,11 @@ const drawGameUI = () => {
             HEART_IMAGE.height
         );
     }
+
+    context.font = "bold 30pt sans-serif";
+    context.fillStyle = "#ffffff";
+    context.strokeStyle = "#000000";
+    context.lineWidth = 2;
+    context.fillText(`SCORE: ${shared.player.score}`, TILE_SIZE * 11 + 10, HEARTS_POSITION * 1.4);
+    context.strokeText(`SCORE: ${shared.player.score}`, TILE_SIZE * 11 + 10, HEARTS_POSITION * 1.4);
 };
