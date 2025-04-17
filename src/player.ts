@@ -146,7 +146,7 @@ export default class Player extends Entity {
     getHit() {
         this.health--;
         if (this.health <= 0) {
-            //game over
+            shared.isGameOver = true;
         }
     }
 

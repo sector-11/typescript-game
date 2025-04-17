@@ -10,17 +10,22 @@ import {
     WALL_HORIZ_IMAGE,
     WALL_IMAGE,
 } from "./constants";
+import { gameOverScreen } from "./drawscreens";
 import { Room } from "./map";
 import { shared } from "./shared";
 
 export const update = () => {
-    drawTerrain(shared.currentRoom);
-    for (const entity of shared.currentEntities) {
-        entity.move();
-        entity.draw();
+    if (shared.isGameOver) {
+        gameOverScreen();
+    } else {
+        drawTerrain(shared.currentRoom);
+        for (const entity of shared.currentEntities) {
+            entity.move();
+            entity.draw();
+        }
+        drawGameUI();
+        window.requestAnimationFrame(update);
     }
-    drawGameUI();
-    window.requestAnimationFrame(update);
 };
 
 const drawTerrain = (room: Room) => {

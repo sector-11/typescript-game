@@ -20,6 +20,7 @@ class Shared {
         ArrowRight: false,
     };
     player: Player = new Player(7, 4, PLAYER_IMAGE, 4, 500);
+    isGameOver: boolean = false;
 
     private constructor() {}
 

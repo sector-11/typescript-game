@@ -7,6 +7,7 @@ import {
     TILE_SIZE,
 } from "./constants";
 import { update } from "./gameloop";
+import { shared } from "./shared";
 
 export const titleScreen = () => {
     drawTextScreenBG();
@@ -48,6 +49,28 @@ export const titleScreen = () => {
 
     let continueAfterClick = () => {
         window.removeEventListener("click", continueAfterClick);
+        window.requestAnimationFrame(update);
+    };
+
+    window.addEventListener("click", continueAfterClick);
+};
+
+export const gameOverScreen = () => {
+    drawTextScreenBG();
+    context.font = "bold 72pt sans-serif";
+    context.fillStyle = "#000000";
+    context.strokeStyle = "#ffffff";
+    context.lineWidth = 2;
+    context.fillText("GAME OVER", TILE_SIZE * 4, TILE_SIZE * 3);
+    context.strokeText("GAME OVER", TILE_SIZE * 4, TILE_SIZE * 3);
+
+    context.font = "bold 50pt sans-serif";
+    context.fillText("CLICK OR TAP TO TRY AGAIN", TILE_SIZE * 2, TILE_SIZE * 8);
+    context.strokeText("CLICK OR TAP TO TRY AGAIN", TILE_SIZE * 2, TILE_SIZE * 8);
+
+    let continueAfterClick = () => {
+        window.removeEventListener("click", continueAfterClick);
+        shared.isGameOver = false;
         window.requestAnimationFrame(update);
     };
 
